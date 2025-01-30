@@ -1,0 +1,150 @@
+x-airflow-common:
+  &airflow-common
+  build:
+    context: .
+    dockerfile: ${AIRFLOW_DOCKERFILE}
+  environment:
+    AIRFLOW__CORE__EXECUTOR: ${CORE_EXECUTOR}
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW_DB_CONN}
+    AIRFLOW__CORE__LOAD_EXAMPLES: ${LOAD_EXAMPLES}
+    MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
+    PYTHONPATH: /opt/airflow/scripts:/opt/airflow/dags:${PYTHONPATH}
+    AIRFLOW__CORE__DEFAULT_PYTHON_INTERPRETER: /opt/conda/bin/python
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./src:/opt/airflow/src
+    - ./mlflow_artifacts:/mlflow_artifacts
+
+  depends_on:
+    &airflow-common-depends-on
+    postgres-airflow:
+      condition: service_healthy
+
+  networks:
+    - ml-network
+
+services:
+
+  postgres-mlflow:
+    image: ${POSTGRES_IMAGE}
+    container_name: postgres-mlflow
+    environment:
+      POSTGRES_USER: ${POSTGRES_MLFLOW_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_MLFLOW_PWD}
+      POSTGRES_DB: ${POSTGRES_MLFLOW_DB}
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "mlflow" ]
+      interval: 5s
+      retries: 5
+    volumes:
+      - postgres-db-volume-mlflow:/var/lib/postgresql/data
+    networks:
+      - ml-network
+
+  mlflow:
+    build: ${MLFLOW_DOCKERFILE}
+    container_name: mlflow
+    ports:
+      - "5000:5000"
+    command: mlflow ui -p 5000 --host 0.0.0.0 --default-artifact-root /mlflow_artifacts --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
+    depends_on:
+      postgres-mlflow:
+        condition: service_healthy
+    volumes:
+       - ./mlflow_artifacts:/mlflow_artifacts
+    environment:
+      MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
+    restart: always
+    networks:
+      - ml-network
+
+  jupyter:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/jupyter/Dockerfile
+    container_name: jupyter
+    ports:
+      - 8893:8893
+    environment:
+      JUPYTER_ENABLE_LAB: ${JUPYTER_ENABLE_LAB}
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
+      PYTHONPATH: "$$PYTHONPATH:/opt/airflow/plugins"
+      MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
+    volumes:
+      - ./:/mlops
+      - ./mlflow_artifacts:/mlflow_artifacts
+    entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8893 --notebook-dir=/mlops --allow-root'
+    networks:
+      - ml-network
+
+
+  postgres-airflow:
+    image: ${POSTGRES_IMAGE}
+    container_name: postgres-airflow
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume-airflow:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    restart: always
+    networks:
+      - ml-network
+
+  airflow-webserver:
+    container_name: airflow-webserver
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    container_name: airflow-scheduler
+    <<: *airflow-common
+    command: scheduler
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      postgres-airflow:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-init:
+    container_name: airflow-init
+    <<: *airflow-common
+    command: >
+      bash -c "
+      airflow db init &&
+      airflow db upgrade &&
+      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.org
+      "
+    restart: no
+
+networks:
+  ml-network:
+    driver: bridge
+
+volumes:
+    postgres-db-volume-mlflow:
+    postgres-db-volume-airflow:

@@ -1,0 +1,3 @@
+mlflow
+psycopg2-binary
+boto3
