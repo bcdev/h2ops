@@ -1,9 +1,27 @@
 FROM apache/airflow:2.10.4-python3.12
+
 USER root
-RUN apt-get update && \
-    apt-get install -y \
-      git && \
-    apt-get clean
+WORKDIR /opt/airflow
+
+RUN apt-get update && apt-get install -y curl bzip2
+
+RUN curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj -C /opt/
+
+ENV PATH="/opt/bin:$PATH"
+RUN micromamba --version
+
 USER airflow
-COPY ../../requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY ../../environment.yml .
+
+RUN micromamba env create -f environment.yml
+RUN micromamba env list
+
+SHELL ["/bin/bash", "-c"]
+RUN micromamba shell init -s bash
+RUN echo "source activate test-cc-mlops" >> ~/.bashrc
+
+ENV CONDA_DEFAULT_ENV=mlops
+
+RUN micromamba env list
+
+RUN micromamba list

@@ -59,24 +59,25 @@ services:
     networks:
       - ml-network
 
-  jupyter:
-    build:
-      context: .
-      dockerfile: ./dockerfiles/jupyter/Dockerfile
-    container_name: jupyter
-    ports:
-      - 8893:8893
-    environment:
-      JUPYTER_ENABLE_LAB: ${JUPYTER_ENABLE_LAB}
-      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
-      PYTHONPATH: "$$PYTHONPATH:/opt/airflow/plugins"
-      MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
-    volumes:
-      - ./:/mlops
-      - ./mlflow_artifacts:/mlflow_artifacts
-    entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8893 --notebook-dir=/mlops --allow-root'
-    networks:
-      - ml-network
+#  jupyter:
+#    build:
+#      context: .
+#      dockerfile: ./dockerfiles/jupyter/Dockerfile
+#    container_name: jupyter
+#    ports:
+#      - 8893:8893
+#    environment:
+#      JUPYTER_ENABLE_LAB: ${JUPYTER_ENABLE_LAB}
+#      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
+#      PYTHONPATH: "$$PYTHONPATH:/opt/airflow/plugins"
+#      MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
+#    volumes:
+#      - ./:/mlops
+#      - ./mlflow_artifacts:/mlflow_artifacts
+#      - ./notebooks_old:/notebooks_old
+#    entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8893 --notebook-dir=/mlops --allow-root'
+#    networks:
+#      - ml-network
 
 
   postgres-airflow:
@@ -136,7 +137,7 @@ services:
     command: >
       bash -c "
       airflow db init &&
-      airflow db upgrade &&
+      airflow db migrate &&
       airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.org
       "
     restart: no

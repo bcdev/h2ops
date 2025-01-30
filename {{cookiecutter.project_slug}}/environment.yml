@@ -1,0 +1,10 @@
+name: mlops
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - mlflow
+  - psycopg2-binary
+  - boto3
+  - airflow
+  - jupyter
