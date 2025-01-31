@@ -30,6 +30,9 @@ integrating essential MLOps tools:
 └── dockerfiles/        # Dockerfiles and compose files
 ```
 
+## ML Pipeline Overview
+
+
 ## Getting Started
 
 ### Prerequisites
@@ -77,8 +80,33 @@ Wait for the services to start (usually take 2-3 mins, might take longer the fir
 - Airflow UI: http://localhost:8080
 - MLflow UI: http://localhost:5000
 - JupyterLab: http://localhost:8895
+- Minio (Local S3): http://localhost:9000
 
 ## Usage
+
+Deploy local inference server
+
+Prerequisites
+
+- [Pyenv](https://github.com/pyenv/pyenv-installer)
+- Make sure standard libraries in linux are upto date.
+  ```
+  sudo apt-get update
+  sudo apt-get install -y build-essential
+  sudo apt-get install --reinstall libffi-dev
+  ```
+- Run these commands to export the AWS (Local Minio server running)
+  ```bash
+   export AWS_ACCESS_KEY_ID=minio 
+   export AWS_SECRET_ACCESS_KEY=minio123
+   export MLFLOW_S3_ENDPOINT_URL=http://127.0.0.1:9000
+  ```
+- Now we are ready for local inference server. Run this after replacing the required stuff
+    ```bash
+    mlflow models serve -m s3://mlflow/0/<run_id>/artifacts/<model_name> -h 0.0.0.0 -p 3333
+    ```
+- We can now run inference against this server on the `/invocations` endpoint,
+- run `local_inference_test.py` after changing your input data.
 
 
 ### Development Workflow
@@ -103,4 +131,5 @@ Wait for the services to start (usually take 2-3 mins, might take longer the fir
 - [Cookiecutter](https://github.com/cookiecutter/cookiecutter)
 - [Apache Airflow](https://airflow.apache.org/)
 - [MLflow](https://mlflow.org/)
+- [Minio](https://min.io/docs/minio/container/index.html)
 - [JupyterLab](https://jupyterlab.readthedocs.io/)
