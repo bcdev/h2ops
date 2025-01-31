@@ -3,12 +3,14 @@
 CACHE=true
 JUPYTER_PORT=8895
 DELETE_VOLUME=false
+DOCKER_BUILD=true
 
-while getopts "c:j:v:" opt; do
+while getopts "c:j:v:d:" opt; do
     case $opt in
         c) CACHE="$OPTARG" ;;
         j) JUPYTER_PORT="$OPTARG" ;;
         v) DELETE_VOLUME="$OPTARG" ;;
+        d) DOCKER_BUILD="$OPTARG" ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
     esac
 done
@@ -47,7 +49,8 @@ create_directory() {
     if chmod -R 777 "$dir_name" 2>/dev/null; then
         echo "Set permissions for $dir_name"
     else
-        echo "Error: Could not set permissions for $dir_name."
+#      TODO: Check if permissions are already correct.
+        echo "Warning: Could not set permissions for $dir_name."
     fi
 }
 
@@ -64,14 +67,19 @@ create_directory "logs"
 check_port "$JUPYTER_PORT"
 
 echo "Starting Docker Compose services..."
-if [ "$CACHE" = true ]; then
-  echo "Docker compose build with cache"
-  docker compose build  || handle_error "Docker Compose build failed"
+
+if [ "$DOCKER_BUILD" = true ]; then
+  if [ "$CACHE" = true ]; then
+    echo "Docker compose build with cache"
+    docker compose build  || handle_error "Docker Compose build failed"
+  else
+    echo "Docker compose build without cache"
+    docker compose build --no-cache || handle_error "Docker Compose build failed"
+  fi
+  docker compose up -d || handle_error "Docker Compose up failed"
 else
-  echo "Docker compose build without cache"
-  docker compose build --no-cache || handle_error "Docker Compose build failed"
+  docker compose up -d || handle_error "Docker Compose up failed"
 fi
-docker compose up -d || handle_error "Docker Compose up failed"
 
 echo "Starting Jupyter Lab..."
 jupyter lab --ip=0.0.0.0 --port="$JUPYTER_PORT" &

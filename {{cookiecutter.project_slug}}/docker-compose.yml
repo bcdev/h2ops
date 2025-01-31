@@ -8,7 +8,10 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW_DB_CONN}
     AIRFLOW__CORE__LOAD_EXAMPLES: ${LOAD_EXAMPLES}
     MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
-    PYTHONPATH: /home/airflow/.local/share/mamba/envs/mlops/bin:/opt/airflow/scripts:/opt/airflow/dags:${PYTHONPATH}
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    MLFLOW_S3_ENDPOINT_URL: http://minio:${MINIO_PORT}
+    PYTHONPATH: /home/airflow/.local/share/mamba/envs/mlops/bin:/opt/airflow/src:/opt/airflow/dags:${PYTHONPATH}
     PATH: /home/airflow/.local/share/mamba/envs/mlops/bin:${PATH}
     LD_LIBRARY_PATH: /home/airflow/.local/share/mamba/envs/mlops/lib:${LD_LIBRARY_PATH}
     AIRFLOW__CORE__DEFAULT_PYTHON_INTERPRETER: /home/airflow/.local/share/mamba/envs/mlops/bin/python
@@ -16,7 +19,6 @@ x-airflow-common:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./src:/opt/airflow/src
-    - ./scripts:/opt/airflow/scripts
     - ./mlflow_artifacts:/mlflow_artifacts
 
   depends_on:
@@ -50,14 +52,18 @@ services:
     container_name: mlflow
     ports:
       - "${MLFLOW_HOST_PORT:-5000}:5000"
-    command: mlflow ui -p ${MLFLOW_HOST_PORT} --host 0.0.0.0 --default-artifact-root ${DEFAULT_ARTIFACT_ROOT} --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
+    command: mlflow ui -p ${MLFLOW_HOST_PORT} --host 0.0.0.0 --default-artifact-root s3://${MLFLOW_BUCKET_NAME} --artifacts-destination s3://${MLFLOW_BUCKET_NAME} --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
     depends_on:
       postgres-mlflow:
         condition: service_healthy
-    volumes:
-       - ./${DEFAULT_ARTIFACT_ROOT}:/${DEFAULT_ARTIFACT_ROOT}
+#    volumes:
+#       - ./${DEFAULT_ARTIFACT_ROOT}:/${DEFAULT_ARTIFACT_ROOT}
     environment:
       MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      MLFLOW_S3_ENDPOINT_URL: http://minio:${MINIO_PORT}
+
     restart: always
     networks:
       - ml-network
@@ -66,9 +72,9 @@ services:
     image: ${POSTGRES_IMAGE}
     container_name: postgres-airflow
     environment:
-      POSTGRES_USER: POSTGRES_AIRFLOW_USER
-      POSTGRES_PASSWORD: POSTGRES_AIRFLOW_PWD
-      POSTGRES_DB: POSTGRES_AIRFLOW_DB
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume-airflow:/var/lib/postgresql/data
     healthcheck:
@@ -124,6 +130,43 @@ services:
       "
     restart: no
 
+  minio:
+    restart: always
+    image: minio/minio
+    container_name: mlflow_s3
+    ports:
+        - "9000:9000"
+        - "9001:9001"
+    command: server /data --console-address ':9001' --address ':9000'
+    environment:
+        - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID}
+        - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY}
+    volumes:
+        - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      retries: 5
+    networks:
+      - ml-network
+
+  mc:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    container_name: mc
+    env_file:
+        - .env
+    entrypoint: >
+        /bin/sh -c "
+        /usr/bin/mc alias set minio http://minio:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} &&
+        /usr/bin/mc mb minio/mlflow;
+        exit 0;
+        "
+    networks:
+      - ml-network
+
 networks:
   ml-network:
     driver: bridge
@@ -131,3 +174,4 @@ networks:
 volumes:
     postgres-db-volume-mlflow:
     postgres-db-volume-airflow:
+    minio_data:
