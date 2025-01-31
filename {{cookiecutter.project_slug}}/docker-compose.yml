@@ -8,12 +8,15 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW_DB_CONN}
     AIRFLOW__CORE__LOAD_EXAMPLES: ${LOAD_EXAMPLES}
     MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
-    PYTHONPATH: /opt/airflow/scripts:/opt/airflow/dags:${PYTHONPATH}
-    AIRFLOW__CORE__DEFAULT_PYTHON_INTERPRETER: /opt/conda/bin/python
+    PYTHONPATH: /home/airflow/.local/share/mamba/envs/mlops/bin:/opt/airflow/scripts:/opt/airflow/dags:${PYTHONPATH}
+    PATH: /home/airflow/.local/share/mamba/envs/mlops/bin:${PATH}
+    LD_LIBRARY_PATH: /home/airflow/.local/share/mamba/envs/mlops/lib:${LD_LIBRARY_PATH}
+    AIRFLOW__CORE__DEFAULT_PYTHON_INTERPRETER: /home/airflow/.local/share/mamba/envs/mlops/bin/python
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./src:/opt/airflow/src
+    - ./scripts:/opt/airflow/scripts
     - ./mlflow_artifacts:/mlflow_artifacts
 
   depends_on:
@@ -58,27 +61,6 @@ services:
     restart: always
     networks:
       - ml-network
-
-#  jupyter:
-#    build:
-#      context: .
-#      dockerfile: ./dockerfiles/jupyter/Dockerfile
-#    container_name: jupyter
-#    ports:
-#      - 8893:8893
-#    environment:
-#      JUPYTER_ENABLE_LAB: ${JUPYTER_ENABLE_LAB}
-#      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
-#      PYTHONPATH: "$$PYTHONPATH:/opt/airflow/plugins"
-#      MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
-#    volumes:
-#      - ./:/mlops
-#      - ./mlflow_artifacts:/mlflow_artifacts
-#      - ./notebooks_old:/notebooks_old
-#    entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8893 --notebook-dir=/mlops --allow-root'
-#    networks:
-#      - ml-network
-
 
   postgres-airflow:
     image: ${POSTGRES_IMAGE}

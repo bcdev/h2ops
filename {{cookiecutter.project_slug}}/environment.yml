@@ -8,3 +8,4 @@ dependencies:
   - boto3
   - airflow
   - jupyter
+  - python-dotenv
