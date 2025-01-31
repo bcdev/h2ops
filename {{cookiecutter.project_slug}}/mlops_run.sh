@@ -1,12 +1,12 @@
 #!/bin/bash
 
-NO_CACHE=true
+CACHE=true
 JUPYTER_PORT=8895
 DELETE_VOLUME=false
 
 while getopts "c:j:v:" opt; do
     case $opt in
-        c) NO_CACHE="$OPTARG" ;;
+        c) CACHE="$OPTARG" ;;
         j) JUPYTER_PORT="$OPTARG" ;;
         v) DELETE_VOLUME="$OPTARG" ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
@@ -23,6 +23,8 @@ cleanup() {
       echo "Shutting down docker without deleting volumes"
       docker compose down
     fi
+    echo "Shutting down jupyter"
+    kill $(lsof -t -i:$JUPYTER_PORT -sTCP:LISTEN) 2>/dev/null || true
     echo "Cleanup complete"
 }
 
@@ -62,12 +64,12 @@ create_directory "logs"
 check_port "$JUPYTER_PORT"
 
 echo "Starting Docker Compose services..."
-if [ "$NO_CACHE" = true ]; then
+if [ "$CACHE" = true ]; then
+  echo "Docker compose build with cache"
+  docker compose build  || handle_error "Docker Compose build failed"
+else
   echo "Docker compose build without cache"
   docker compose build --no-cache || handle_error "Docker Compose build failed"
-else
-  echo "Docker compose build with cache"
-  docker compose build || handle_error "Docker Compose build failed"
 fi
 docker compose up -d || handle_error "Docker Compose up failed"
 

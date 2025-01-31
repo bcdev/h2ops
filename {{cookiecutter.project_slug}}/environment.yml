@@ -9,3 +9,4 @@ dependencies:
   - airflow
   - jupyter
   - python-dotenv
+  - git

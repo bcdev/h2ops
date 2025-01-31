@@ -49,13 +49,13 @@ services:
     build: ${MLFLOW_DOCKERFILE}
     container_name: mlflow
     ports:
-      - "5000:5000"
-    command: mlflow ui -p 5000 --host 0.0.0.0 --default-artifact-root /mlflow_artifacts --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
+      - "${MLFLOW_HOST_PORT:-5000}:5000"
+    command: mlflow ui -p ${MLFLOW_HOST_PORT} --host 0.0.0.0 --default-artifact-root ${DEFAULT_ARTIFACT_ROOT} --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
     depends_on:
       postgres-mlflow:
         condition: service_healthy
     volumes:
-       - ./mlflow_artifacts:/mlflow_artifacts
+       - ./${DEFAULT_ARTIFACT_ROOT}:/${DEFAULT_ARTIFACT_ROOT}
     environment:
       MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
     restart: always
@@ -66,9 +66,9 @@ services:
     image: ${POSTGRES_IMAGE}
     container_name: postgres-airflow
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_USER: POSTGRES_AIRFLOW_USER
+      POSTGRES_PASSWORD: POSTGRES_AIRFLOW_PWD
+      POSTGRES_DB: POSTGRES_AIRFLOW_DB
     volumes:
       - postgres-db-volume-airflow:/var/lib/postgresql/data
     healthcheck:
@@ -84,7 +84,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - "8080:8080"
+      - "${AIRFLOW_WEBSERVER_PORT:-8080}:8080"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 10s
