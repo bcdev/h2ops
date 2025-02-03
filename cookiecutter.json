@@ -1,0 +1,4 @@
+{
+  "project_slug": "Enter the name of your ML Project",
+  "use_minio": ["yes", "no"]
+}

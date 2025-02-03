@@ -8,9 +8,11 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW_DB_CONN}
     AIRFLOW__CORE__LOAD_EXAMPLES: ${LOAD_EXAMPLES}
     MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
+    {% if cookiecutter.use_minio == "yes" %}
     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     MLFLOW_S3_ENDPOINT_URL: http://minio:${MINIO_PORT}
+    {% endif %}
     PYTHONPATH: /home/airflow/.local/share/mamba/envs/mlops/bin:/opt/airflow/src:/opt/airflow/dags:${PYTHONPATH}
     PATH: /home/airflow/.local/share/mamba/envs/mlops/bin:${PATH}
     LD_LIBRARY_PATH: /home/airflow/.local/share/mamba/envs/mlops/lib:${LD_LIBRARY_PATH}
