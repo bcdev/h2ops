@@ -50,7 +50,8 @@ integrating essential MLOps tools:
 
 1.1
 
-When prompted for input, enter the details requested. For e.g.
+When prompted for input, enter the details requested. If you dont provide any 
+input for a given choice, the first choice from the list is taken as the default.
 
 Add image of cookiecutter creation
 
@@ -77,9 +78,9 @@ Use the following flags to modify the behaviour of the script
 
 Wait for the services to start (usually take 2-3 mins, might take longer the first time)
 
-- Airflow UI: http://localhost:8080
+- Airflow UI: http://0.0.0.0:8080
 - MLflow UI: http://localhost:5000
-- JupyterLab: http://localhost:8895
+- JupyterLab: Opens up JupyterLab automatically at port 8895
 - Minio (Local S3): http://localhost:9000
 
 ## Usage

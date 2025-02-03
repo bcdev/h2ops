@@ -1,4 +1,5 @@
 {
-  "project_slug": "Enter the name of your ML Project",
-  "use_minio": ["yes", "no"]
+  "project_name": "Enter the name of your ML Project",
+  "use_minio": ["yes", "no"],
+  "show_airflow_dag_examples": ["false", "true"]
 }

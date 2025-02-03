@@ -21,7 +21,9 @@ x-airflow-common:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./src:/opt/airflow/src
+    {% if cookiecutter.use_minio == "no" %}
     - ./mlflow_artifacts:/mlflow_artifacts
+    {% endif %}
 
   depends_on:
     &airflow-common-depends-on
@@ -53,18 +55,28 @@ services:
     build: ${MLFLOW_DOCKERFILE}
     container_name: mlflow
     ports:
-      - "${MLFLOW_HOST_PORT:-5000}:5000"
-    command: mlflow ui -p ${MLFLOW_HOST_PORT} --host 0.0.0.0 --default-artifact-root s3://${MLFLOW_BUCKET_NAME} --artifacts-destination s3://${MLFLOW_BUCKET_NAME} --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
+      - ${MLFLOW_HOST_PORT:-5000}:5000
     depends_on:
       postgres-mlflow:
         condition: service_healthy
-#    volumes:
-#       - ./${DEFAULT_ARTIFACT_ROOT}:/${DEFAULT_ARTIFACT_ROOT}
+    command: mlflow ui -p ${MLFLOW_HOST_PORT} --host 0.0.0.0 
+            {% if cookiecutter.use_minio == "yes" %}
+            --default-artifact-root s3://${MLFLOW_BUCKET_NAME} --artifacts-destination s3://${MLFLOW_BUCKET_NAME}
+            {% else %}
+            --default-artifact-root /mlflow_artifacts
+            {% endif %}
+            --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
+    {% if cookiecutter.use_minio == "no" %}
+    volumes:
+      - ./${DEFAULT_ARTIFACT_ROOT}:/${DEFAULT_ARTIFACT_ROOT}
+    {% endif %}
     environment:
       MLFLOW_TRACKING_URI: ${MLFLOW_SERVER_URI}
+      {% if cookiecutter.use_minio == "yes" %}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       MLFLOW_S3_ENDPOINT_URL: http://minio:${MINIO_PORT}
+      {% endif %}
 
     restart: always
     networks:
@@ -92,7 +104,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - "${AIRFLOW_WEBSERVER_PORT:-8080}:8080"
+      - ${AIRFLOW_WEBSERVER_PORT:-8080}:8080
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 10s
@@ -132,6 +144,7 @@ services:
       "
     restart: no
 
+  {% if cookiecutter.use_minio == "yes" %}
   minio:
     restart: always
     image: minio/minio
@@ -151,7 +164,9 @@ services:
       retries: 5
     networks:
       - ml-network
+  {% endif %}
 
+  {% if cookiecutter.use_minio == "yes" %}
   mc:
     image: minio/mc
     depends_on:
@@ -168,6 +183,7 @@ services:
         "
     networks:
       - ml-network
+  {% endif %}
 
 networks:
   ml-network:

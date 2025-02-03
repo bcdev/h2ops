@@ -61,7 +61,9 @@ check_port() {
 }
 
 echo "Setting up directories..."
+{% if cookiecutter.use_minio == "no" %}
 create_directory "mlflow_artifacts"
+{% endif %}
 create_directory "logs"
 
 check_port "$JUPYTER_PORT"
