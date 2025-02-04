@@ -13,6 +13,8 @@ integrating essential MLOps tools:
 
 ## Project Structure
 
+<TODO: mention which folders are artifcats, which they have to actively use, ignore. Use * to mention that>
+
 ```
 ├── .github/            # GitHub Actions workflows
 ├── dags/               # Airflow DAG definitions
