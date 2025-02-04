@@ -1,4 +1,4 @@
-# MLOps Project Cookiecutter Template
+# MLOps Project Template
 
 A comprehensive cookiecutter template for machine learning projects
 incorporating MLOps practices using `Airflow`, `MLFlow`, and `JupyterLab`.
