@@ -1,10 +1,12 @@
 # MLOps Project Template
 
-A comprehensive template for machine learning projects
+A comprehensive template (_in-development_) for machine learning projects
 incorporating MLOps practices using `Airflow`, `MLFlow`, `JupyterLab` and `Minio`.
 
-Please note: this template has only been tested on Linux Ubuntu and it works as expected.
+**Please note**: 
+This template has only been tested on Linux Ubuntu and it works as expected.
 As we have not tested it yet on Windows, we are not sure if it works in there.
+
 
 ## Overview
 
@@ -30,10 +32,10 @@ or even worry about them. Just focus on the ones without the mark!
 │   ├── postprocess/    # Postprocess model output
 │   └── utils/          # Utility functions
 ├── tests/              # Unit and integration tests
-├── mlflow-artifacts/   # MLflow artifacts (created if you dont choose minio) *
+├── mlflow-artifacts/   # MLflow artifacts (created if you don't choose minio) *
 ├── mlops_run.sh        # Shell script to start MLOps services locally *
 ├── docker-compose.yml  # Docker compose that spins up all services locally for MLOps *
-├── pipeline-config.yml # Configure your airflow DAGs (still in progress)
+├── pipeline-config.yml # Configure your airflow DAGs (support in future)
 └── dockerfiles/        # Dockerfiles and compose files *
 ```
 
@@ -81,7 +83,8 @@ Purpose: Object storage for ML artifacts
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- Python 3.12
+- [Python 3.12](https://anaconda.org/conda-forge/python/files?sort=length&type=&version=3.12.0&sort_order=desc&channel=main)
+- [Mamba](https://github.com/conda-forge/miniforge)
 - [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html#install-cookiecutter)
 
 ### Installation
@@ -94,37 +97,125 @@ Purpose: Object storage for ML artifacts
 1.1. When prompted for input, enter the details requested. If you dont provide any 
 input for a given choice, the first choice from the list is taken as the default.
 
-2. Start the services:
+
+2. Create and activate mamba environment.
+You can update the `environment.yml` to include your libraries, or you can 
+update them later as well.
+```bash
+  mamba env create
+  mamba activate <your-env-name>
+```
+
+If you have created an environment using the steps above, and would like to 
+update the mamba env after adding new libraries in `environment.yml`, do this:
+```bash
+  mamba env update
+```
+
+3. Start the services:
 ```bash
   chmod +x mlops_run.sh
 ```
 ```bash
-  ./mlops_run.sh 
+  ./mlops_run.sh -d -c
 ```
-Use the following flags to modify the behaviour of the script
+The following flags exist which could alter the behaviour of the way the framework 
+runs, but the user should not worry about it or change them if not needed.
 ```commandline
--c -> to build docker images with/without cache; defaults to true; options [true, false]
+-c -> to build docker images without cache
 -j -> to change the port of jupyter lab instance running; defaults to 8895
--v -> to shut down docker with/without deleting attached volumes; defaults to false; options [true, false]
+-v -> to delete attached volumes when shutting down
+-d -> to build the docker images before starting the containers
 ```
 
-3. Stopping the services
+4. Stopping the services:
+
+You should stop these container services when you're done working 
+with your project, need to free up system resources, or want to apply some updates.
+To gracefully stop the services, run this in the terminal where you started them:
 ```bash
   ctrl + C
 ```
 
-### Accessing Services
+### Accessing the services
 
 Wait for the services to start (usually take 2-3 mins, might take longer if you start it without cache)
 
 - Airflow UI: http://localhost:8080
+  - Login Details:
+    - username: `admin`
+    - password: `admin`
 - MLflow UI: http://localhost:5000
 - JupyterLab: Opens up JupyterLab automatically at port 8895
 - Minio (Local S3): http://localhost:9000
+  - Login Details:
+    - username: `minio`
+    - password: `minio123`
+
+## Key concepts
+### Airflow UI
+- **DAGs (Directed Acyclic Graphs)**: A workflow representation in Airflow. You can enable, disable, and trigger DAGs from the UI.
+- **Graph View**: Visual representation of task dependencies.
+- **Tree View**: Displays DAG execution history over time.
+- T**ask Instance**: A single execution of a task in a DAG.
+- **Logs**: Each task's execution details and errors.
+- **Code View**: Shows the Python code of a DAG.
+- **Trigger DAG**: Manually start a DAG run.
+- **Pause DAG**: Stops automatic DAG execution.
+
+Common Actions
+
+- **Enable a DAG**: Toggle the On/Off button.
+- **Manually trigger a DAG**: Click Trigger DAG ▶️.
+- **View logs**: Click on a task instance and select Logs.
+- **Restart a failed task**: Click Clear to rerun a specific task.
+
+### MLFlow UI
+- **Experiments**: Group of runs tracking different versions of ML models.
+- **Runs**: A single execution of an ML experiment with logged parameters, metrics, and artifacts.
+- **Parameters**: Hyperparameters or inputs logged during training.
+- **Metrics**: Performance indicators like accuracy or loss.
+- **Artifacts**: Files such as models, logs, or plots.
+- **Model Registry**: Centralized storage for trained models with versioning.
+
+Common Actions
+
+- **View experiment runs**: Go to Experiments > Select an experiment
+- **Compare runs**: Select multiple runs and click Compare.
+- **View parameters and metrics**: Click on a run to see details.
+- **View registered model**: Under Artifacts, select a model and click Register Model.
 
 ## Usage
 
-Deploy local inference server
+### Development Workflow
+
+1. In the JupyterLab that was opened up in your browser, navigate to the 
+`notebooks` folder and create notebooks where you can experiment with your 
+data, models and log metrics, params and artifacts to MLFlow. 
+There are some example notebooks provided in the `examples` 
+directory tp help you get started. If you chose MinIO as your local S3, use it 
+to mimic API calls to real S3 to make sure all works when this goes into 
+production.
+2. Once you have your logic ready for the data ingestion, preprocessing and 
+training, refactor it to production code in the `src/` directory.
+3. Create tests in the `tests/` directory to test your data preprocessing 
+methods and data schema etc. Make them green.
+4. Create a new dag in the `dags` folder using the `example_dag.py` template provided.
+**NOTE**: This will be simplified in the future.
+5. Now you can see your DAG in the [Airflow UI](http://localhost:8080). 
+You can trigger by clicking the 
+`Trigger DAG ▶️` button. You can now view the logs of
+your dag's execution and its status.
+6. If you chose [MinIO](http://localhost:9000) (recommended) during the project 
+initialization for MLFLow artifact storage, you can view them in the MinIO UI to
+check if everything was generated correctly.
+7. While the model is training, you can track the model experiments on the 
+[MLFlow UI](http://localhost:5000).
+
+
+### Deployment workflow
+ 
+####  Deploying local inference server (for testing the model)
 
 Prerequisites
 
@@ -148,19 +239,6 @@ Prerequisites
 - We can now run inference against this server on the `/invocations` endpoint,
 - run `local_inference_test.py` after changing your input data.
 
-
-### Development Workflow
-
-1. Develop and experiment in JupyterLab
-2. Refactor production code into the `src/` directory
-3. Create tests in the `tests/` directory
-4. Update CI/CD pipelines using the provided GitHub Actions workflows (if required)
-
-### Creating ML Pipelines
-
-1. Define your data processing and model training steps in the `src/` directory
-2. Create Airflow DAGs in `dags/` to orchestrate your pipeline
-3. Track experiments using MLflow in your training scripts:
 
 
 ## Configuration

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-CACHE=true
+CACHE=false
 JUPYTER_PORT=8895
 DELETE_VOLUME=false
-DOCKER_BUILD=true
+DOCKER_BUILD=false
 
-while getopts "c:j:v:d:" opt; do
+while getopts "cj:vd" opt; do
     case $opt in
-        c) CACHE="$OPTARG" ;;
+        c) CACHE=true ;;
         j) JUPYTER_PORT="$OPTARG" ;;
-        v) DELETE_VOLUME="$OPTARG" ;;
-        d) DOCKER_BUILD="$OPTARG" ;;
+        v) DELETE_VOLUME=true ;;
+        d) DOCKER_BUILD=true ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
     esac
 done
