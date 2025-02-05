@@ -37,14 +37,50 @@ or even worry about them. Just focus on the ones without the mark!
 ```
 
 ## ML Pipeline Overview
+## Components
 
+### 0. Cookiecutter
+Purpose: Project scaffolding and template generation
+
+    Provides a standardized way to create ML projects with predefined structures.
+    Ensures consistency across different ML projects within BC
+
+
+### 1. Apache Airflow
+
+Purpose: Workflow orchestration
+
+    Manages and schedules data pipelines.
+    Automates end-to-end ML workflows, including data ingestion, training, deployment and re-training.
+    Provides a user-friendly web interface for tracking task execution's status.
+
+### 2. MLflow
+
+Purpose: Experiment tracking and model management
+
+    Tracks and records machine learning experiments, including hyperparameters, performance metrics, and model artifacts.
+    Facilitates model versioning and reproducibility.
+    Supports multiple deployment targets, including cloud platforms, Kubernetes, and on-premises environments.
+
+### 3. JupyterLab
+
+Purpose: Interactive development environment
+
+    Provides an intuitive and interactive web-based interface for exploratory data analysis, visualization, and model development.
+
+### 4. MinIO
+
+Purpose: Object storage for ML artifacts
+
+    Acts as a cloud-native storage solution for datasets and models.
+    Provides an S3-compatible API for seamless integration with ML tools.
 
 ## Getting Started
 
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- Python 3.8+
+- Python 3.12
 - [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html#install-cookiecutter)
 
 ### Installation
@@ -54,12 +90,8 @@ or even worry about them. Just focus on the ones without the mark!
   cookiecutter https://github.com/bcdev/cookiecutter-mlops
 ```
 
-1.1
-
-When prompted for input, enter the details requested. If you dont provide any 
+1.1. When prompted for input, enter the details requested. If you dont provide any 
 input for a given choice, the first choice from the list is taken as the default.
-
-Add image of cookiecutter creation
 
 2. Start the services:
 ```bash
@@ -82,7 +114,7 @@ Use the following flags to modify the behaviour of the script
 
 ### Accessing Services
 
-Wait for the services to start (usually take 2-3 mins, might take longer the first time)
+Wait for the services to start (usually take 2-3 mins, might take longer if you start it without cache)
 
 - Airflow UI: http://localhost:8080
 - MLflow UI: http://localhost:5000
@@ -141,6 +173,11 @@ Prerequisites
 - [Minio](https://min.io/docs/minio/container/index.html)
 - [JupyterLab](https://jupyterlab.readthedocs.io/)
 
-## TODOs:
 
-- Add option to autolog in MLFlow
+## TODO:
+- add tests for cookiecutter template
+- add starter tests within the template
+- add github worklfow for testing
+- add function to create dags from a config file.
+- add model deployment on remote server
+- add trigger-based example dags
