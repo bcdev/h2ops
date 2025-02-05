@@ -1,7 +1,10 @@
 # MLOps Project Template
 
-A comprehensive cookiecutter template for machine learning projects
-incorporating MLOps practices using `Airflow`, `MLFlow`, and `JupyterLab`.
+A comprehensive template for machine learning projects
+incorporating MLOps practices using `Airflow`, `MLFlow`, `JupyterLab` and `Minio`.
+
+Please note: this template has only been tested on Linux Ubuntu and it works as expected.
+As we have not tested it yet on Windows, we are not sure if it works in there.
 
 ## Overview
 
@@ -13,23 +16,24 @@ integrating essential MLOps tools:
 
 ## Project Structure
 
-<TODO: mention which folders are artifcats, which they have to actively use, ignore. Use * to mention that>
-
+Currently, any files or folders marked with `*` are off-limits—no need to change, modify, 
+or even worry about them. Just focus on the ones without the mark!
 ```
-├── .github/            # GitHub Actions workflows
-├── dags/               # Airflow DAG definitions
+├── .github/            # GitHub Actions workflows *
+├── dags/               # Airflow DAG definitions (still in progress, you have to modify it a bit for now)
 ├── notebooks/          # JupyterLab notebooks
-├── src/
+├── src/                  (For new projects, it would be good to follow this standardized folder structure
+                            You are of course allowed to add anything you like to it.)
 │   ├── train/          # Model training
 │   ├── preprocess/     # Feature engineering
 │   ├── postprocess/    # Postprocess model output
 │   └── utils/          # Utility functions
 ├── tests/              # Unit and integration tests
-├── mlflow-artifacts/   # MLflow artifacts
-├── mlops_run.sh        # Shell script to start MLOps services locally
-├── docker-compose.yml  # Docker compose that spins up all services locally for MLOps
-├── pipeline-config.yml # Configure your airflow DAGs
-└── dockerfiles/        # Dockerfiles and compose files
+├── mlflow-artifacts/   # MLflow artifacts (created if you dont choose minio) *
+├── mlops_run.sh        # Shell script to start MLOps services locally *
+├── docker-compose.yml  # Docker compose that spins up all services locally for MLOps *
+├── pipeline-config.yml # Configure your airflow DAGs (still in progress)
+└── dockerfiles/        # Dockerfiles and compose files *
 ```
 
 ## ML Pipeline Overview
@@ -80,7 +84,7 @@ Use the following flags to modify the behaviour of the script
 
 Wait for the services to start (usually take 2-3 mins, might take longer the first time)
 
-- Airflow UI: http://0.0.0.0:8080
+- Airflow UI: http://localhost:8080
 - MLflow UI: http://localhost:5000
 - JupyterLab: Opens up JupyterLab automatically at port 8895
 - Minio (Local S3): http://localhost:9000
@@ -136,3 +140,7 @@ Prerequisites
 - [MLflow](https://mlflow.org/)
 - [Minio](https://min.io/docs/minio/container/index.html)
 - [JupyterLab](https://jupyterlab.readthedocs.io/)
+
+## TODOs:
+
+- Add option to autolog in MLFlow

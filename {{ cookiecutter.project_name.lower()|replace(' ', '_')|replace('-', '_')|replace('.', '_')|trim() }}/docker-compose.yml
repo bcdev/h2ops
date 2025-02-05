@@ -13,10 +13,11 @@ x-airflow-common:
     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     MLFLOW_S3_ENDPOINT_URL: http://minio:${MINIO_PORT}
     {% endif %}
-    PYTHONPATH: /home/airflow/.local/share/mamba/envs/mlops/bin:/opt/airflow/src:/opt/airflow/dags:${PYTHONPATH}
+    PYTHONPATH: /opt/airflow/src:/opt/airflow/dags:${PYTHONPATH}
     PATH: /home/airflow/.local/share/mamba/envs/mlops/bin:${PATH}
-    LD_LIBRARY_PATH: /home/airflow/.local/share/mamba/envs/mlops/lib:${LD_LIBRARY_PATH}
+    LD_LIBRARY_PATH: /home/airflow/.local/share/mamba/envs/mlops/lib:/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH}
     AIRFLOW__CORE__DEFAULT_PYTHON_INTERPRETER: /home/airflow/.local/share/mamba/envs/mlops/bin/python
+    PYTHONNOUSERSITE: 1
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs

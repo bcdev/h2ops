@@ -18,12 +18,12 @@ from ..utils.utils import get_s3_client, get_latest_data_path, \
 load_dotenv()
 
 s3 = get_s3_client(
-    endpoint_url=os.getenv("J_MLFLOW_S3_ENDPOINT_URL"),
+    endpoint_url=os.getenv("MLFLOW_S3_ENDPOINT_URL"),
     access_key=os.getenv("AWS_ACCESS_KEY_ID"),
     secret_key=os.getenv("AWS_SECRET_ACCESS_KEY")
 )
 
-def train():
+def train_mnist():
 
     bucket_name="mnist-data"
     base_folder="preprocessing"
@@ -84,8 +84,9 @@ def train():
                 "training_accuracy": train_acc,
                 "validation_loss": history.history['val_loss'][-1],
                 "training_loss": history.history['loss'][-1],
-                "data_source": s3_path
             })
+
+            mlflow.log_param(key="data_source", value=s3_path)
 
             if val_acc > best_accuracy:
                 best_accuracy = val_acc
