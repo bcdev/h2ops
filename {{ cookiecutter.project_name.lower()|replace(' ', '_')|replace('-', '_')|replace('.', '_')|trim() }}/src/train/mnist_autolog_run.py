@@ -4,19 +4,20 @@ import itertools
 import mlflow
 import numpy as np
 from dotenv import load_dotenv
+
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import keras
 
-from ..utils.utils import get_s3_client, get_latest_data_path, \
-    get_or_create_experiment
+from ..utils.utils import get_s3_client, get_latest_data_path, get_or_create_experiment
 
 load_dotenv()
 
 s3 = get_s3_client(
     endpoint_url=os.getenv("MLFLOW_S3_ENDPOINT_URL"),
     access_key=os.getenv("AWS_ACCESS_KEY_ID"),
-    secret_key=os.getenv("AWS_SECRET_ACCESS_KEY")
+    secret_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
 )
+
 
 def train_mnist_autolog():
 
@@ -90,5 +91,7 @@ def train_mnist_autolog():
                 mlflow.tensorflow.log_model(model, artifact_path)
 
                 model_uri = mlflow.get_artifact_uri(artifact_path)
+
+                print(f"Best model accuracy: {best_accuracy:.4f}")
                 print("Best model params: ", best_params)
                 print("Model stored at ", model_uri)

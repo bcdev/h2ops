@@ -10,9 +10,9 @@ from ..utils.utils import get_s3_client
 load_dotenv()
 
 s3 = get_s3_client(
-    endpoint_url=os.getenv("J_MLFLOW_S3_ENDPOINT_URL"),
+    endpoint_url=os.getenv("MLFLOW_S3_ENDPOINT_URL"),
     access_key=os.getenv("AWS_ACCESS_KEY_ID"),
-    secret_key=os.getenv("AWS_SECRET_ACCESS_KEY")
+    secret_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
 )
 
 
@@ -20,15 +20,15 @@ def preprocess_and_store():
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
-    X_train = X_train.astype('float32') / 255.0
-    X_test = X_test.astype('float32') / 255.0
+    X_train = X_train.astype("float32") / 255.0
+    X_test = X_test.astype("float32") / 255.0
     X_train = np.expand_dims(X_train, axis=-1)
     X_test = np.expand_dims(X_test, axis=-1)
 
     local_path = f"/tmp/mnist_processed_{timestamp}.npz"
-    np.savez_compressed(local_path,
-                        X_train=X_train, y_train=y_train,
-                        X_test=X_test, y_test=y_test)
+    np.savez_compressed(
+        local_path, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test
+    )
 
     bucket_name = "mnist-data"
     object_path = f"preprocessing/{timestamp}/mnist_processed.npz"
