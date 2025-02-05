@@ -13,6 +13,7 @@ integrating essential MLOps tools:
 - **Apache Airflow**: For orchestrating ML pipelines and workflows
 - **MLflow**: For experiment tracking and model registry
 - **JupyterLab**: For interactive development and experimentation
+- **MinIO**: For local object storage for ML artifacts
 
 ## Project Structure
 
