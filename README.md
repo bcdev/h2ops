@@ -3,6 +3,14 @@
 A comprehensive template (_in-development_) for machine learning projects
 incorporating MLOps practices using `Airflow`, `MLFlow`, `JupyterLab` and `Minio`.
 
+
+The architecture below describes what we want to achieve as our MLOps framework.
+This is taken from the [Google Cloud Architecture Centre](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#mlops_level_2_cicd_pipeline_automation)
+
+Currently what we support is the within the box outlined as local MLOps.
+
+![Current Local MLOps Architecture](assets/current_mlops_arch.png)
+
 **Please note**: 
 This template has only been tested on Linux Ubuntu and it works as expected.
 As we have not tested it yet on Windows, we are not sure if it works in there.
