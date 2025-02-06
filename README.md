@@ -214,8 +214,46 @@ check if everything was generated correctly.
 
 
 ### Deployment workflow
- 
-####  Deploying local inference server (for testing the model)
+
+Once you have a model trained, you can deploy it locally either as
+container or serve it directly from MinIO S3.
+We recommend to deploy it as a container as this makes sure that it has its 
+own environment for serving.
+
+#### Deploying Model as a Container locally
+
+Since we have been working with docker containers so far, all the environment 
+variables have been set for them, but now as we need to deploy them,
+we would need to export a few variables so that MLFLow has access to them and 
+can pull the required models from MinIO S3.
+
+```bash
+  export MLFLOW_TRACKING_URI=http://127.0.0.1:5000 
+  export MLFLOW_S3_ENDPOINT_URL=http://127.0.0.1:9000 
+  export AWS_ACCESS_KEY_ID=mini
+  export AWS_SECRET_ACCESS_KEY=minio12
+```
+
+Once we have this variables exported, find out the `run_id` of the model you 
+want to deploy from the MLFlow UI and run the following command:
+
+```bash
+  mlflow models build-docker -m runs:/<run-id>/model -n <name-of-your-container> --enable-mlserver
+```
+
+After this finishes, you can run the docker container by:
+
+```bash
+  docker run -p 5002:8080 <name-of-your-container> 
+```
+
+Now you have an endpoint ready at `127.0.0.1:5002`.
+
+Have a look at `notebooks/examples/mlflow_docker_inference.ipynb` for an 
+example on how to get predictions
+
+
+####  Deploying local inference server
 
 Prerequisites
 
