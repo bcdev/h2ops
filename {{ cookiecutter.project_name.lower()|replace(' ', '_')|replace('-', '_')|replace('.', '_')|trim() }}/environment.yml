@@ -11,6 +11,8 @@ dependencies:
   - jupyter
   - python-dotenv
   - git
+  - gusty
+  - dag-factory
   # This is only needed for an exmaple. If you dont need this, please feel free to remove it.
   - keras
   - tensorflow

@@ -1,5 +1,6 @@
 {
   "project_name": "Enter the name of your ML Project (only spaces, dots, underscores or dashes special characters allowed)",
   "use_minio": ["yes", "no"],
-  "show_airflow_dag_examples": ["false", "true"]
+  "show_airflow_dag_examples": ["false", "true"],
+  "include_lib_gusty": ["yes", "no"]
 }

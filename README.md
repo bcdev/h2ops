@@ -44,6 +44,7 @@ or even worry about them. Just focus on the ones without the mark!
 ├── mlops_run.sh        # Shell script to start MLOps services locally *
 ├── docker-compose.yml  # Docker compose that spins up all services locally for MLOps *
 ├── pipeline-config.yml # Configure your airflow DAGs (support in future)
+├── environment.yml     # Libraries required for local mlops and your project
 └── dockerfiles/        # Dockerfiles and compose files *
 ```
 
