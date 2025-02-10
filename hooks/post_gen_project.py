@@ -39,9 +39,9 @@ def modify_environment_yaml(env_file):
     dependencies = env_data.get("dependencies", [])
     new_dependencies = []
 
-    include_lib_gusty = "{{ cookiecutter.include_lib_gusty }}".strip().lower()
+    use_dag_factory = "{{ cookiecutter.use_dag_factory }}".strip().lower()
     for dep in dependencies:
-        if dep == "gusty" and include_lib_gusty != "yes":
+        if dep == "dag-factory" and use_dag_factory != "yes":
             continue
         new_dependencies.append(dep)
     env_data["dependencies"] = new_dependencies

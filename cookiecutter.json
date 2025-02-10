@@ -1,6 +1,7 @@
 {
+   " ": "\nIn this Cookiecutter ML project template, you will get the following questions.\n\nProject Name: Please provide your project name\n[Please press enter to continue]",
   "project_name": "Enter the name of your ML Project (only spaces, dots, underscores or dashes special characters allowed)",
   "use_minio": ["yes", "no"],
   "show_airflow_dag_examples": ["false", "true"],
-  "include_lib_gusty": ["yes", "no"]
+  "use_dag_factory": ["yes", "no"]
 }

@@ -1,13 +1,13 @@
 default:
   default_args:
     catchup: false
-    start_date: "2024-11-11"
+    start_date: "2025-02-07"
 
 basic_example_dag:
   default_args:
     owner: "custom_owner"
   description: "this is an example dag"
-  schedule_interval: "0 3 * * *"
+  schedule_interval: "0 0 * * *"
   render_template_as_native_obj: True
   tasks:
     task_1:
@@ -21,3 +21,44 @@ basic_example_dag:
       operator: airflow.operators.bash.BashOperator
       bash_command: "echo 2"
       dependencies: [task_1]
+    task_4:
+      operator: airflow.operators.python.PythonOperator
+      python_callable: src.train
+      dependencies: [ task_2, task_3 ]
+
+kubernetes_dag:
+  description: "this is an example kubernetes dag"
+  render_template_as_native_obj: True
+  tasks:
+    task1:
+      operator: airflow.providers.cncf.kubernetes.operators.pod.KubernetesPodOperator
+      arguments:
+        task_id: task1
+        name: task1-pod
+        image: syogesh9/airflow-dags-test:v6
+        cmds: ["/opt/conda/bin/python", "-m", "task1"]
+        log_events_on_failure: True
+        get_logs: True
+      dependencies: []
+
+    task2:
+      operator: airflow.providers.cncf.kubernetes.operators.pod.KubernetesPodOperator
+      arguments:
+        task_id: task2
+        name: task2-pod
+        image: syogesh9/airflow-dags-test:v6
+        cmds: ["python", "-m", "task2"]
+        log_events_on_failure: True
+        get_logs: True
+      dependencies: [task1]
+
+    task3:
+      operator: airflow.providers.cncf.kubernetes.operators.pod.KubernetesPodOperator
+      arguments:
+        task_id: task3
+        name: task3-pod
+        image: syogesh9/airflow-dags-test:v6
+        cmds: ["python", "-m", "task3"]
+        log_events_on_failure: True
+        get_logs: True
+      dependencies: [task2]

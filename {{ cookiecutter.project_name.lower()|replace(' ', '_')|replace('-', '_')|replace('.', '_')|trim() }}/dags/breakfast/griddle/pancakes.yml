@@ -1,3 +1,0 @@
-operator: airflow.operators.dummy.DummyOperator
-dependencies:
-  - make_batter
