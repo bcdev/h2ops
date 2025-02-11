@@ -1,0 +1,9 @@
+name: terraflow
+channels:
+  - conda-forge
+dependencies:
+  - python<3.13
+  - cookiecutter
+  # Testing
+  - pytest
+  - ruff

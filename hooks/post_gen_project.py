@@ -59,13 +59,13 @@ def main():
     use_dag_factory = "{{ cookiecutter.use_dag_factory }}".strip().lower()
 
     if use_dag_factory:
-        to_be_deleted_deps.append("dag-factory")
+        to_be_deleted_deps.append("dag_factory")
 
     env_file = os.path.join(os.getcwd(), "environment.yml")
     modify_environment_yaml(env_file, to_be_deleted_deps)
 
     if use_dag_factory != "yes":
-        dir_to_remove = os.path.join(os.getcwd(), "dags/examples/dag-factory")
+        dir_to_remove = os.path.join(os.getcwd(), "dags/examples/dag_factory")
         remove_directory(dir_to_remove)
     else:
         dir_to_remove = os.path.join(os.getcwd(), "dags/examples/manual_dags")
