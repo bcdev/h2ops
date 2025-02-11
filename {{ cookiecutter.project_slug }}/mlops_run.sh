@@ -5,12 +5,12 @@ JUPYTER_PORT=8895
 DELETE_VOLUME=false
 DOCKER_BUILD=false
 
-while getopts "cj:vd" opt; do
+while getopts "cj:vb" opt; do
     case $opt in
         c) CACHE=true ;;
         j) JUPYTER_PORT="$OPTARG" ;;
         v) DELETE_VOLUME=true ;;
-        d) DOCKER_BUILD=true ;;
+        b) DOCKER_BUILD=true ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
     esac
 done

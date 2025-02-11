@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import keras
 
-from ..utils.utils import get_s3_client, get_latest_data_path, get_or_create_experiment
+from src.utils.utils import get_s3_client, get_latest_data_path, get_or_create_experiment
 
 load_dotenv()
 

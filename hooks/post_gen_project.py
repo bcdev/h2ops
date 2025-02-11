@@ -24,7 +24,7 @@ def remove_directory(dir_path):
             print(f"Error removing directory {dir_path}: {e}")
 
 
-def modify_environment_yaml(env_file):
+def modify_environment_yaml(env_file: str, to_be_deleted_deps: list[str]):
     """Remove unwanted libraries from environment.yml based on user input."""
     if not os.path.exists(env_file):
         print(f"{env_file} not found.")
@@ -39,24 +39,37 @@ def modify_environment_yaml(env_file):
     dependencies = env_data.get("dependencies", [])
     new_dependencies = []
 
-    use_dag_factory = "{{ cookiecutter.use_dag_factory }}".strip().lower()
     for dep in dependencies:
-        if dep == "dag-factory" and use_dag_factory != "yes":
-            continue
+        for to_be_deleted_dep in to_be_deleted_deps:
+            if dep == to_be_deleted_dep:
+                continue
         new_dependencies.append(dep)
     env_data["dependencies"] = new_dependencies
 
     try:
         with open(env_file, "w") as f:
-            yaml.dump(env_data, f, default_flow_style=False)
+            yaml.dump(env_data, f)
         print(f"Updated {env_file}")
     except Exception as e:
         print(f"Error writing {env_file}: {e}")
 
 
 def main():
+    to_be_deleted_deps = []
+    use_dag_factory = "{{ cookiecutter.use_dag_factory }}".strip().lower()
+
+    if use_dag_factory:
+        to_be_deleted_deps.append("dag-factory")
+
     env_file = os.path.join(os.getcwd(), "environment.yml")
-    modify_environment_yaml(env_file)
+    modify_environment_yaml(env_file, to_be_deleted_deps)
+
+    if use_dag_factory != "yes":
+        dir_to_remove = os.path.join(os.getcwd(), "dags/examples/dag-factory")
+        remove_directory(dir_to_remove)
+    else:
+        dir_to_remove = os.path.join(os.getcwd(), "dags/examples/manual_dags")
+        remove_directory(dir_to_remove)
 
 
 if __name__ == "__main__":

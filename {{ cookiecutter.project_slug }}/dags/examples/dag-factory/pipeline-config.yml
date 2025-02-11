@@ -1,14 +1,19 @@
 default:
   default_args:
     catchup: false
-    start_date: "2025-02-07"
+    start_date: "2025-02-11"
 
 basic_example_dag:
   default_args:
     owner: "custom_owner"
   description: "this is an example dag"
   schedule_interval: "0 0 * * *"
-  render_template_as_native_obj: True
+  task_groups:
+    task_group_23:
+      tooltip: "this is a task group"
+      dependencies: [ task_1 ]
+    task_group_4:
+      dependencies: [ task_2, task_3 ]
   tasks:
     task_1:
       operator: airflow.operators.bash.BashOperator
@@ -16,15 +21,56 @@ basic_example_dag:
     task_2:
       operator: airflow.operators.bash.BashOperator
       bash_command: "echo 2"
-      dependencies: [task_1]
+      task_group_name: task_group_23
     task_3:
       operator: airflow.operators.bash.BashOperator
-      bash_command: "echo 2"
-      dependencies: [task_1]
+      bash_command: "echo 3"
+      task_group_name: task_group_23
     task_4:
       operator: airflow.operators.python.PythonOperator
       python_callable: src.train
-      dependencies: [ task_2, task_3 ]
+      task_group_name: task_group_4
+      op_kwargs:
+        my_param: "test_value"
+    task_5:
+      operator: airflow.operators.bash.BashOperator
+      bash_command: "echo 5"
+      dependencies: [ task_4 ]
+
+ml_mnist_autolog_dag:
+  description: "This is an autolog version of Mnist training"
+  tags: ["mnist_autolog"]
+  tasks:
+    preprocess_and_store:
+      operator: airflow.operators.python.PythonOperator
+      python_callable: src.preprocess_and_store
+    train_mnist_autolog:
+      operator: airflow.operators.python.PythonOperator
+      python_callable: src.train_mnist_autolog
+      dependencies: [ preprocess_and_store ]
+
+
+ml_mnist_dag:
+  description: "This is an normal version of Mnist training"
+  tags: ["mnist"]
+  tasks:
+    preprocess_and_store:
+      operator: airflow.operators.python.PythonOperator
+      python_callable: src.preprocess_and_store
+    train_mnist:
+      operator: airflow.operators.python.PythonOperator
+      python_callable: src.train_mnist
+      dependencies: [ preprocess_and_store ]
+
+
+ml_single_step_dag:
+  description: "This is an normal version of Mnist training"
+  tags: ["mnist"]
+  tasks:
+    train:
+      operator: airflow.operators.python.PythonOperator
+      python_callable: src.train
+
 
 kubernetes_dag:
   description: "this is an example kubernetes dag"

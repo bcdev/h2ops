@@ -5,7 +5,6 @@ WORKDIR /opt/airflow
 
 RUN echo "deb http://deb.debian.org/debian testing main" >> /etc/apt/sources.list
 
-# Install newer libstdc++6
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     bzip2 \

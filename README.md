@@ -1,6 +1,8 @@
-# MLOps Project Template
+# Terraflow: MLOps Project Template
 
-A comprehensive template (_in-development_) for machine learning projects
+![Terraflow](assets/terraflow.png)
+
+Terraflow is a comprehensive template (_in-development_) for machine learning projects
 incorporating MLOps practices using `Airflow`, `MLFlow`, `JupyterLab` and `Minio`.
 
 
@@ -126,7 +128,7 @@ update the mamba env after adding new libraries in `environment.yml`, do this:
   chmod +x mlops_run.sh
 ```
 ```bash
-  ./mlops_run.sh -d -c
+  ./mlops_run.sh -b -c
 ```
 The following flags exist which could alter the behaviour of the way the framework 
 runs, but the user should not worry about it or change them if not needed.
@@ -134,7 +136,7 @@ runs, but the user should not worry about it or change them if not needed.
 -c -> to build docker images without cache
 -j -> to change the port of jupyter lab instance running; defaults to 8895
 -v -> to delete attached volumes when shutting down
--d -> to build the docker images before starting the containers
+-b -> to build the docker images before starting the containers
 ```
 
 4. Stopping the services:

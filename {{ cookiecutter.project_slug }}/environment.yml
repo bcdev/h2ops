@@ -8,10 +8,13 @@ dependencies:
   - psycopg2-binary
   - boto3
   - airflow
+  - apache-airflow-providers-cncf-kubernetes
   - jupyter
   - python-dotenv
   - git
-  - dag-factory
+  - pip
+  - pip:
+    - dag-factory
   # This is only needed for an exmaple. If you dont need this, please feel free to remove it.
   - keras
   - tensorflow

@@ -5,7 +5,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from tensorflow.keras.datasets import mnist
 
-from ..utils.utils import get_s3_client
+from src.utils.utils import get_s3_client
 
 load_dotenv()
 
