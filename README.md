@@ -306,6 +306,5 @@ Prerequisites
 - add tests for cookiecutter template
 - add starter tests within the template
 - add github worklfow for testing
-- add function to create dags from a config file.
 - add model deployment on remote server
 - add trigger-based example dags
