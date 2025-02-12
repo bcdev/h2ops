@@ -1,5 +1,5 @@
 from pathlib import Path
-from airflow import DAG
+from airflow import DAG  # noqa
 import dagfactory
 
 BASE_DIR = Path(__file__).resolve().parent
