@@ -1,5 +1,7 @@
 # Terraflow: MLOps Project Template
 
+[![Unittest Terraflow](https://github.com/bcdev/terraflow/actions/workflows/unittest.yml/badge.svg)](https://github.com/bcdev/terraflow/actions/workflows/unittest.yml)
+
 ![Terraflow](assets/terraflow.png)
 
 TerraFlow combines "Terra" (Latin for Earth) and "Flow" (signifying seamless automation), 
