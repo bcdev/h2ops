@@ -35,7 +35,7 @@ def preprocess_and_store():
 
     try:
         s3.head_bucket(Bucket=bucket_name)
-    except:
+    except NameError:
         print(f"Bucket: {bucket_name} does not exist, creating one now!")
         s3.create_bucket(Bucket=bucket_name)
 

@@ -1,6 +1,5 @@
 import itertools
 import os
-from datetime import datetime
 
 import numpy as np
 
@@ -11,7 +10,11 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 
-from src.utils.utils import get_s3_client, get_latest_data_path, get_or_create_experiment
+from src.utils.utils import (
+    get_s3_client,
+    get_latest_data_path,
+    get_or_create_experiment,
+)
 
 load_dotenv()
 

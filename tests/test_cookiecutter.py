@@ -1,5 +1,6 @@
 import pathlib
 import shutil
+import subprocess
 import tempfile
 
 import yaml
@@ -256,14 +257,35 @@ def test_full_directory_tree(
         ), f"Expected file '{expected}' not found in the project tree."
 
 
-def test_post_gen_hook_executed(temp_dir):
+@pytest.mark.parametrize(
+    "extra_context, expected_project_slug, expect_dag_factory",
+    [
+        (
+            {
+                "project_name": "My ML Project",
+                "use_minio": "yes",
+                "show_airflow_dag_examples": "false",
+                "use_dag_factory": "yes",
+            },
+            "my_ml_project",
+            True,
+        ),
+        (
+            {
+                "project_name": "My ML Project",
+                "use_minio": "no",
+                "show_airflow_dag_examples": "false",
+                "use_dag_factory": "no",
+            },
+            "my_ml_project",
+            False,
+        ),
+    ],
+)
+def test_post_gen_hook_executed(
+    temp_dir, extra_context, expected_project_slug, expect_dag_factory
+):
     template_dir = str(pathlib.Path(__file__).parent.parent)
-    extra_context = {
-        "project_name": "My ML Project",
-        "use_minio": "yes",
-        "show_airflow_dag_examples": "false",
-        "use_dag_factory": "no",
-    }
     cookiecutter(
         template=template_dir,
         no_input=True,
@@ -271,7 +293,7 @@ def test_post_gen_hook_executed(temp_dir):
         output_dir=temp_dir,
     )
 
-    project_dir = pathlib.Path(temp_dir) / "my_ml_project"
+    project_dir = pathlib.Path(temp_dir) / expected_project_slug
 
     env_file = project_dir / "environment.yml"
     assert env_file.exists(), "environment.yml file is missing."
@@ -280,16 +302,64 @@ def test_post_gen_hook_executed(temp_dir):
         env_data = yaml.safe_load(f)
 
     dependencies = env_data.get("dependencies", [])
-    assert (
-        "dag_factory" in dependencies
-    ), "dag_factory should be in dependencies when use_dag_factory is 'yes'."
+    print(dependencies)
+    assert {
+        "pip": ["dag_factory"]
+    } in dependencies, (
+        "dag_factory should be in dependencies when use_dag_factory is 'yes'."
+    )
 
     dag_factory_dir = project_dir / "dags/examples/dag_factory"
     manual_dags_dir = project_dir / "dags/examples/manual_dags"
 
-    if "{{ cookiecutter.use_dag_factory }}".strip().lower() == "yes":
+    if expect_dag_factory:
         assert dag_factory_dir.exists(), "dag_factory directory should exist."
         assert not manual_dags_dir.exists(), "manual_dags directory should be removed."
     else:
         assert not dag_factory_dir.exists(), "dag_factory directory should be removed."
         assert manual_dags_dir.exists(), "manual_dags directory should exist."
+
+
+@pytest.mark.parametrize(
+    "extra_context",
+    [
+        (
+            {
+                "project_name": "My ML Project",
+                "use_minio": "yes",
+                "show_airflow_dag_examples": "false",
+                "use_dag_factory": "yes",
+            }
+        ),
+        (
+            {
+                "project_name": "My ML Project",
+                "use_minio": "no",
+                "show_airflow_dag_examples": "false",
+                "use_dag_factory": "no",
+            }
+        ),
+    ],
+)
+def test_ruff_linting(temp_dir, extra_context):
+    template_dir = str(pathlib.Path(__file__).parent.parent)
+
+    cookiecutter(
+        template=template_dir,
+        no_input=True,
+        extra_context=extra_context,
+        output_dir=temp_dir,
+    )
+
+    project_dir = pathlib.Path(temp_dir) / "my_ml_project"
+    result = subprocess.run(
+        ["ruff", "check", "."],
+        cwd=str(project_dir),
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, (
+        "Ruff linting failed.\n"
+        f"stdout:\n{result.stdout}\n"
+        f"stderr:\n{result.stderr}"
+    )
