@@ -102,7 +102,7 @@ Purpose: Object storage for ML artifacts
 
 1. Generate the project from template:
 ```bash
-  cookiecutter https://github.com/bcdev/cookiecutter-mlops
+  cookiecutter https://github.com/bcdev/terraflow
 ```
 
 1.1. When prompted for input, enter the details requested. If you dont provide any 
