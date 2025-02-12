@@ -4,7 +4,6 @@ channels:
 dependencies:
   - python<3.13
   - cookiecutter
-  - jupyter
   # Testing
   - pytest
   - ruff
