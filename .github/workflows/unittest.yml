@@ -1,0 +1,23 @@
+name: Unittest Terraflow
+
+on:
+  push:
+  release:
+    types: [ published ]
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout terraflow
+        uses: actions/checkout@v4
+
+      - name: Set up MicroMamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: environment.yml
+
+      - name: run tests
+        shell: bash -l {0}
+        run: |
+          pytest --cov=terraflow --cov-report=xml
