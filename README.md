@@ -7,7 +7,7 @@
 TerraFlow combines "Terra" (Latin for Earth) and "Flow" (signifying seamless automation), 
 representing a MLOps tool that streamlines the flow of geospatial data and machine learning 
 models for Earth Observation. Just as Airflow automates workflows and MLflow manages ML 
-lifecycles, TerraFlow would orchestrates the entire pipeline for remote sensing ML-based 
+lifecycles, TerraFlow would orchestrate the entire pipeline for remote sensing ML-based 
 projects.
 
 It is a comprehensive template (_in-development_) for machine learning projects
