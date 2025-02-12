@@ -2,7 +2,13 @@
 
 ![Terraflow](assets/terraflow.png)
 
-Terraflow is a comprehensive template (_in-development_) for machine learning projects
+TerraFlow combines "Terra" (Latin for Earth) and "Flow" (signifying seamless automation), 
+representing a MLOps tool that streamlines the flow of geospatial data and machine learning 
+models for Earth Observation. Just as Airflow automates workflows and MLflow manages ML 
+lifecycles, TerraFlow would orchestrates the entire pipeline for remote sensing ML-based 
+projects.
+
+It is a comprehensive template (_in-development_) for machine learning projects
 incorporating MLOps practices using `Airflow`, `MLFlow`, `JupyterLab` and `Minio`.
 
 
@@ -303,8 +309,9 @@ Prerequisites
 
 
 ## TODO:
-- add tests for cookiecutter template
+- add pyproject.toml
+- add license choice
 - add starter tests within the template
-- add github worklfow for testing
+- add github CI worklfow for testing
 - add model deployment on remote server
 - add trigger-based example dags
