@@ -1,9 +1,9 @@
-name: {{ cookiecutter.project_name.lower()|replace(' ', '_')|replace('-', '_')|replace('.', '_')|trim() }}
+name: {{ cookiecutter.folder_name }}
 channels:
   - conda-forge
 dependencies:
   # required for mlops framework
-  - python
+  - python >3.10,<3.13
   - mlflow
   - psycopg2-binary
   - boto3

@@ -13,15 +13,15 @@ x-airflow-common:
     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     MLFLOW_S3_ENDPOINT_URL: http://minio:${MINIO_PORT}
     {% endif %}
-    PYTHONPATH: /opt/airflow/src:/opt/airflow/dags:${PYTHONPATH}
-    PATH: /home/airflow/.local/share/mamba/envs/{{ cookiecutter.project_slug }}/bin:${PATH}
-    LD_LIBRARY_PATH: /home/airflow/.local/share/mamba/envs/{{ cookiecutter.project_slug }}/lib:/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH}
-    AIRFLOW__CORE__DEFAULT_PYTHON_INTERPRETER: /home/airflow/.local/share/mamba/envs/{{ cookiecutter.project_slug }}/bin/python
+    PYTHONPATH: /opt/airflow/{{ cookiecutter.package_name }}:/opt/airflow/dags:${PYTHONPATH}
+    PATH: /home/airflow/.local/share/mamba/envs/{{ cookiecutter.folder_name }}/bin:${PATH}
+    LD_LIBRARY_PATH: /home/airflow/.local/share/mamba/envs/{{ cookiecutter.folder_name }}/lib:/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH}
+    AIRFLOW__CORE__DEFAULT_PYTHON_INTERPRETER: /home/airflow/.local/share/mamba/envs/{{ cookiecutter.folder_name }}/bin/python
     PYTHONNOUSERSITE: 1
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
-    - ./src:/opt/airflow/src
+    - ./{{ cookiecutter.package_name }}:/opt/airflow/{{ cookiecutter.package_name }}
     {% if cookiecutter.use_minio == "no" %}
     - ./mlflow_artifacts:/mlflow_artifacts
     {% endif %}

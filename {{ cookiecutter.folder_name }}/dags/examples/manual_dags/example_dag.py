@@ -51,7 +51,7 @@ with DAG(
 
     bash_task = BashOperator(
         task_id="run_script",
-        bash_command="python /opt/airflow/src/train/example_bash.py option1",
+        bash_command="python /opt/airflow/{{ cookiecutter.package_name }}/train/example_bash.py option1",
         dag=dag,
     )
 

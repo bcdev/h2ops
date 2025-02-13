@@ -16,7 +16,7 @@ def temp_dir():
 
 
 @pytest.mark.parametrize(
-    "extra_context, expected_project_slug, expect_dag_factory, expect_minio",
+    "extra_context, expected_folder_name, expect_dag_factory, expect_minio",
     [
         (
             {
@@ -24,6 +24,8 @@ def temp_dir():
                 "use_minio": "yes",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "yes",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             True,
@@ -36,6 +38,8 @@ def temp_dir():
                 "use_minio": "no",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "yes",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             True,
@@ -48,6 +52,8 @@ def temp_dir():
                 "use_minio": "yes",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "no",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             False,
@@ -60,6 +66,8 @@ def temp_dir():
                 "use_minio": "no",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "no",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             False,
@@ -68,7 +76,7 @@ def temp_dir():
     ],
 )
 def test_generated_project(
-    temp_dir, extra_context, expected_project_slug, expect_dag_factory, expect_minio
+    temp_dir, extra_context, expected_folder_name, expect_dag_factory, expect_minio
 ):
     template_dir = str(pathlib.Path(__file__).parent.parent)
 
@@ -79,7 +87,7 @@ def test_generated_project(
         output_dir=temp_dir,
     )
 
-    project_dir = pathlib.Path(temp_dir) / expected_project_slug
+    project_dir = pathlib.Path(temp_dir) / expected_folder_name
     assert project_dir.exists(), "The generated project directory does not exist."
 
     # Verify that README.md exists and includes the project name
@@ -110,7 +118,7 @@ def test_generated_project(
     content = environment_path.read_text(encoding="utf-8")
     assert "dag_factory" in content, "The environment.yml does not contain dag_factory"
     assert (
-        expected_project_slug in content
+        expected_folder_name in content
     ), "The environment.yml does not contain the project name as the env name"
 
     # For minio, check for minio-specific configuration based on expect_minio flag
@@ -170,7 +178,7 @@ def test_generated_project(
 
 
 @pytest.mark.parametrize(
-    "extra_context, expected_project_slug, expect_dag_factory",
+    "extra_context, expected_folder_name, expect_dag_factory",
     [
         (
             {
@@ -178,6 +186,8 @@ def test_generated_project(
                 "use_minio": "yes",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "yes",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             True,
@@ -188,6 +198,8 @@ def test_generated_project(
                 "use_minio": "no",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "no",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             False,
@@ -195,7 +207,7 @@ def test_generated_project(
     ],
 )
 def test_full_directory_tree(
-    temp_dir, extra_context, expected_project_slug, expect_dag_factory
+    temp_dir, extra_context, expected_folder_name, expect_dag_factory
 ):
     template_dir = str(pathlib.Path(__file__).parent.parent)
 
@@ -206,32 +218,32 @@ def test_full_directory_tree(
         output_dir=temp_dir,
     )
 
-    project_dir = pathlib.Path(temp_dir) / expected_project_slug
+    project_dir = pathlib.Path(temp_dir) / expected_folder_name
 
     expected_files = {
         "README.md",
         "docker-compose.yml",
         "environment.yml",
-        "src/__init__.py",
+        "my_package/__init__.py",
         "dockerfiles/airflow/Dockerfile",
         "dockerfiles/mlflow/Dockerfile",
         "dockerfiles/mlflow/requirements.txt",
         "notebooks/examples/mlflow_2_steps.ipynb",
         "notebooks/examples/mlflow_docker_inference.ipynb",
         "notebooks/examples/mlflow_inference.ipynb",
-        "src/preprocess/examples/__init__.py",
-        "src/preprocess/examples/mnist_run.py",
-        "src/preprocess/__init__.py",
-        "src/postprocess/run.py",
-        "src/postprocess/run.py",
-        "src/train/examples/mnist_run.py",
-        "src/train/examples/mnist_autolog_run.py",
-        "src/train/examples/example_bash.py",
-        "src/train/examples/run.py",
-        "src/train/examples/__init__.py",
-        "src/train/__init__.py",
-        "src/__init__.py",
-        "src/utils/utils.py",
+        "my_package/preprocess/examples/__init__.py",
+        "my_package/preprocess/examples/mnist_run.py",
+        "my_package/preprocess/__init__.py",
+        "my_package/postprocess/run.py",
+        "my_package/postprocess/run.py",
+        "my_package/train/examples/mnist_run.py",
+        "my_package/train/examples/mnist_autolog_run.py",
+        "my_package/train/examples/example_bash.py",
+        "my_package/train/examples/run.py",
+        "my_package/train/examples/__init__.py",
+        "my_package/train/__init__.py",
+        "my_package/__init__.py",
+        "my_package/utils/utils.py",
         ".gitignore",
         "local_inference.py",
         "mlops_run.sh",
@@ -258,7 +270,7 @@ def test_full_directory_tree(
 
 
 @pytest.mark.parametrize(
-    "extra_context, expected_project_slug, expect_dag_factory",
+    "extra_context, expected_folder_name, expect_dag_factory",
     [
         (
             {
@@ -266,6 +278,8 @@ def test_full_directory_tree(
                 "use_minio": "yes",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "yes",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             True,
@@ -276,6 +290,8 @@ def test_full_directory_tree(
                 "use_minio": "no",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "no",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             },
             "my_ml_project",
             False,
@@ -283,7 +299,7 @@ def test_full_directory_tree(
     ],
 )
 def test_post_gen_hook_executed(
-    temp_dir, extra_context, expected_project_slug, expect_dag_factory
+    temp_dir, extra_context, expected_folder_name, expect_dag_factory
 ):
     template_dir = str(pathlib.Path(__file__).parent.parent)
     cookiecutter(
@@ -293,7 +309,7 @@ def test_post_gen_hook_executed(
         output_dir=temp_dir,
     )
 
-    project_dir = pathlib.Path(temp_dir) / expected_project_slug
+    project_dir = pathlib.Path(temp_dir) / expected_folder_name
 
     env_file = project_dir / "environment.yml"
     assert env_file.exists(), "environment.yml file is missing."
@@ -329,6 +345,8 @@ def test_post_gen_hook_executed(
                 "use_minio": "yes",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "yes",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             }
         ),
         (
@@ -337,6 +355,8 @@ def test_post_gen_hook_executed(
                 "use_minio": "no",
                 "show_airflow_dag_examples": "false",
                 "use_dag_factory": "no",
+                "folder_name": "my_ml_project",
+                "package_name": "my_package",
             }
         ),
     ],

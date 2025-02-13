@@ -41,10 +41,12 @@ Currently, any files or folders marked with `*` are off-limits—no need to chan
 or even worry about them. Just focus on the ones without the mark!
 ```
 ├── .github/            # GitHub Actions workflows *
-├── dags/               # Airflow DAG definitions (still in progress, you have to modify it a bit for now)
+├── dags/               # Airflow DAG definitions 
+│                          (you can either define dags using a config-file (dag-factory)
+│                           or use Python scripts.)
 ├── notebooks/          # JupyterLab notebooks
 ├── src/                  (For new projects, it would be good to follow this standardized folder structure
-                            You are of course allowed to add anything you like to it.)
+│   │                      You are of course allowed to add anything you like to it.)
 │   ├── train/          # Model training
 │   ├── preprocess/     # Feature engineering
 │   ├── postprocess/    # Postprocess model output
@@ -53,7 +55,6 @@ or even worry about them. Just focus on the ones without the mark!
 ├── mlflow-artifacts/   # MLflow artifacts (created if you don't choose minio) *
 ├── mlops_run.sh        # Shell script to start MLOps services locally *
 ├── docker-compose.yml  # Docker compose that spins up all services locally for MLOps *
-├── pipeline-config.yml # Configure your airflow DAGs (support in future)
 ├── environment.yml     # Libraries required for local mlops and your project
 └── dockerfiles/        # Dockerfiles and compose files *
 ```
@@ -99,14 +100,48 @@ Purpose: Object storage for ML artifacts
 
 ## Getting Started
 
+Please make sure that you install the following from the links provided as they
+have been tried and tested.
+
 ### Prerequisites
 
-- [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- [Python 3.12](https://anaconda.org/conda-forge/python/files?sort=length&type=&version=3.12.0&sort_order=desc&channel=main)
+- [Docker](https://docs.docker.com/engine/install/) and Docker Compose
 - [Mamba](https://github.com/conda-forge/miniforge)
-- [Cookiecutter](https://cookiecutter.readthedocs.io/en/stable/installation.html#install-cookiecutter)
+
+
+#### Docker Troubleshooting
+For Docker compose plugin, please follow the steps below:
+1. From [this](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
+link, follow step 1. `Set up Docker's apt repository`
+2. Then use the following command to install docker compose plugin
+
+```bash
+  sudo apt -get install docker-compose-plugin
+```
+3. Check if the plugin has been installed correctly using
+```bash
+  docker compose
+```
+
+If you face an issue as follows:
+`Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: `,
+do the following
+```bash
+  sudo chmod 666 /var/run/docker.sock
+```
+
+If you face issue like `Docker Daemon not started`, start it using:
+```bash
+  sudo systemctl start docker
+```
 
 ### Installation
+
+0. Create a separate environment for cookiecutter
+```bash
+  mamba create -n cc cookiecutter
+  mamba activate cc
+```
 
 1. Generate the project from template:
 ```bash
@@ -136,7 +171,7 @@ update the mamba env after adding new libraries in `environment.yml`, do this:
   chmod +x mlops_run.sh
 ```
 ```bash
-  ./mlops_run.sh -b -c
+  ./mlops_run.sh -b
 ```
 The following flags exist which could alter the behaviour of the way the framework 
 runs, but the user should not worry about it or change them if not needed.
@@ -147,6 +182,14 @@ runs, but the user should not worry about it or change them if not needed.
 -b -> to build the docker images before starting the containers
 ```
 
+When you run this for the first time, make sure you use the `-b` flag as it builds
+the images for the first time as shown above.
+Next time when you start it again, you start it without the flag as it saves 
+time by not building the same images again:
+```bash
+  ./mlops_run.sh
+```
+
 4. Stopping the services:
 
 You should stop these container services when you're done working 
@@ -155,21 +198,6 @@ To gracefully stop the services, run this in the terminal where you started them
 ```bash
   ctrl + C
 ```
-
-### Accessing the services
-
-Wait for the services to start (usually take 2-3 mins, might take longer if you start it without cache)
-
-- Airflow UI: http://localhost:8080
-  - Login Details:
-    - username: `admin`
-    - password: `admin`
-- MLflow UI: http://localhost:5000
-- JupyterLab: Opens up JupyterLab automatically at port 8895
-- Minio (Local S3): http://localhost:9000
-  - Login Details:
-    - username: `minio`
-    - password: `minio123`
 
 ## Key concepts
 ### Airflow UI
@@ -294,11 +322,8 @@ Prerequisites
     mlflow models serve -m s3://mlflow/0/<run_id>/artifacts/<model_name> -h 0.0.0.0 -p 3333
     ```
 - We can now run inference against this server on the `/invocations` endpoint,
-- run `local_inference_test.py` after changing your input data.
+- run `local_inference.py` after changing your input data.
 
-
-
-## Configuration
 
 
 ## Acknowledgments
@@ -311,6 +336,7 @@ Prerequisites
 
 
 ## TODO:
+- refactor project structure based on feedback
 - add pyproject.toml
 - add license choice
 - add starter tests within the template

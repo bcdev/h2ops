@@ -28,7 +28,7 @@ basic_example_dag:
       task_group_name: task_group_23
     task_4:
       operator: airflow.operators.python.PythonOperator
-      python_callable: src.train
+      python_callable: {{ cookiecutter.package_name }}.train
       task_group_name: task_group_4
       op_kwargs:
         my_param: "test_value"
@@ -43,10 +43,10 @@ ml_mnist_autolog_dag:
   tasks:
     preprocess_and_store:
       operator: airflow.operators.python.PythonOperator
-      python_callable: src.preprocess_and_store
+      python_callable: {{ cookiecutter.package_name }}.preprocess_and_store
     train_mnist_autolog:
       operator: airflow.operators.python.PythonOperator
-      python_callable: src.train_mnist_autolog
+      python_callable: {{ cookiecutter.package_name }}.train_mnist_autolog
       dependencies: [ preprocess_and_store ]
 
 
@@ -56,10 +56,10 @@ ml_mnist_dag:
   tasks:
     preprocess_and_store:
       operator: airflow.operators.python.PythonOperator
-      python_callable: src.preprocess_and_store
+      python_callable: {{ cookiecutter.package_name }}.preprocess_and_store
     train_mnist:
       operator: airflow.operators.python.PythonOperator
-      python_callable: src.train_mnist
+      python_callable: {{ cookiecutter.package_name }}.train_mnist
       dependencies: [ preprocess_and_store ]
 
 
@@ -69,7 +69,7 @@ ml_single_step_dag:
   tasks:
     train:
       operator: airflow.operators.python.PythonOperator
-      python_callable: src.train
+      python_callable: {{ cookiecutter.package_name }}.train
 
 
 kubernetes_dag:
