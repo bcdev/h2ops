@@ -1,7 +1,9 @@
 import os
+import pathlib
 import sys
-import yaml
 import shutil
+import ruamel.yaml
+from ruamel.yaml import CommentedMap
 
 
 def remove_file(file_path):
@@ -24,27 +26,29 @@ def remove_directory(dir_path):
             print(f"Error removing directory {dir_path}: {e}")
 
 
-def modify_environment_yaml(env_file: str, to_be_deleted_deps: list[str]):
+def modify_environment_yaml(env_file: pathlib.Path, to_be_deleted_deps: list[str]):
     """Remove unwanted libraries from environment.yml based on user input."""
-    if not os.path.exists(env_file):
-        print(f"{env_file} not found.")
+    if not pathlib.Path.exists(env_file):
+        print(f"{str(env_file)} not found.")
         return
+
+    yaml = ruamel.yaml.YAML()
+    yaml.indent(offset=2)
+
     try:
-        with open(env_file, "r") as f:
-            env_data = yaml.safe_load(f)
+        env_data = yaml.load(env_file)
     except Exception as e:
-        print(f"Error reading {env_file}: {e}")
+        print(f"Error reading {str(env_file)}: {e}")
         return
 
     dependencies = env_data.get("dependencies", [])
-    new_dependencies = []
 
-    for dep in dependencies:
-        for to_be_deleted_dep in to_be_deleted_deps:
-            if dep == to_be_deleted_dep:
-                continue
-        new_dependencies.append(dep)
-    env_data["dependencies"] = new_dependencies
+    for i in range(len(dependencies) - 1, -1, -1):
+        dep = dependencies[i]
+        if (
+            isinstance(dep, CommentedMap) and dict(dep) in to_be_deleted_deps
+        ) or dep in to_be_deleted_deps:
+            dependencies.remove(dep)
 
     try:
         with open(env_file, "w") as f:
@@ -57,17 +61,28 @@ def modify_environment_yaml(env_file: str, to_be_deleted_deps: list[str]):
 def main():
     to_be_deleted_deps = []
     use_dag_factory = "{{ cookiecutter.use_dag_factory }}".strip().lower()
-
-    if use_dag_factory:
-        to_be_deleted_deps.append("dag_factory")
-
-    env_file = os.path.join(os.getcwd(), "environment.yml")
-    modify_environment_yaml(env_file, to_be_deleted_deps)
+    show_airflow_examples = (
+        "{{ cookiecutter.show_airflow_dag_examples }}".strip().lower()
+    )
 
     if use_dag_factory != "yes":
+        to_be_deleted_deps.append("pip")
+        to_be_deleted_deps.append({"pip": ["dag_factory"]})
+
+    env_file = pathlib.Path().cwd() / "environment.yml"
+    modify_environment_yaml(env_file, to_be_deleted_deps)
+
+    # TODO: Dag factory flag should now show templates instead of examples
+    # if use_dag_factory != "yes":
+    #     dir_to_remove = os.path.join(os.getcwd(), "dags/examples/dag_factory")
+    #     remove_directory(dir_to_remove)
+    # else:
+    #     dir_to_remove = os.path.join(os.getcwd(), "dags/examples/manual_dags")
+    #     remove_directory(dir_to_remove)
+
+    if show_airflow_examples != "yes":
         dir_to_remove = os.path.join(os.getcwd(), "dags/examples/dag_factory")
         remove_directory(dir_to_remove)
-    else:
         dir_to_remove = os.path.join(os.getcwd(), "dags/examples/manual_dags")
         remove_directory(dir_to_remove)
 

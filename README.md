@@ -168,10 +168,10 @@ update the mamba env after adding new libraries in `environment.yml`, do this:
 
 3. Start the services:
 ```bash
-  chmod +x mlops_run.sh
+  chmod +x mlops-run.sh
 ```
 ```bash
-  ./mlops_run.sh -b
+  ./mlops-run.sh -b
 ```
 The following flags exist which could alter the behaviour of the way the framework 
 runs, but the user should not worry about it or change them if not needed.
@@ -187,7 +187,7 @@ the images for the first time as shown above.
 Next time when you start it again, you start it without the flag as it saves 
 time by not building the same images again:
 ```bash
-  ./mlops_run.sh
+  ./mlops-run.sh
 ```
 
 4. Stopping the services:

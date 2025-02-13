@@ -16,13 +16,14 @@ def temp_dir():
 
 
 @pytest.mark.parametrize(
-    "extra_context, expected_folder_name, expect_dag_factory, expect_minio",
+    "extra_context, expected_folder_name, expect_dag_factory, expect_minio, "
+    "expect_examples",
     [
         (
             {
                 "project_name": "My ML Project",
                 "use_minio": "yes",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "no",
                 "use_dag_factory": "yes",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
@@ -30,13 +31,14 @@ def temp_dir():
             "my_ml_project",
             True,
             True,
+            False,
         ),
         # Case: no minio, but dag factory enabled
         (
             {
                 "project_name": "My ML Project",
                 "use_minio": "no",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "yes",
                 "use_dag_factory": "yes",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
@@ -44,13 +46,14 @@ def temp_dir():
             "my_ml_project",
             True,
             False,
+            True,
         ),
         # Case: minio enabled, dag factory disabled
         (
             {
                 "project_name": "My ML Project",
                 "use_minio": "yes",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "no",
                 "use_dag_factory": "no",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
@@ -58,13 +61,14 @@ def temp_dir():
             "my_ml_project",
             False,
             True,
+            False,
         ),
         # Case: neither minio nor dag factory enabled
         (
             {
                 "project_name": "My ML Project",
                 "use_minio": "no",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "yes",
                 "use_dag_factory": "no",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
@@ -72,11 +76,17 @@ def temp_dir():
             "my_ml_project",
             False,
             False,
+            True,
         ),
     ],
 )
 def test_generated_project(
-    temp_dir, extra_context, expected_folder_name, expect_dag_factory, expect_minio
+    temp_dir,
+    extra_context,
+    expected_folder_name,
+    expect_dag_factory,
+    expect_minio,
+    expect_examples,
 ):
     template_dir = str(pathlib.Path(__file__).parent.parent)
 
@@ -98,28 +108,42 @@ def test_generated_project(
         extra_context["project_name"] in content
     ), "The project name was not rendered in the README."
 
-    # Check for the dag_factory examples folder
-    if expect_dag_factory:
-        dag_factory_examples_path = project_dir / "dags" / "examples" / "dag_factory"
-        assert (
-            dag_factory_examples_path.exists()
-        ), "dag_factory folder was not found in the generated project."
-    else:
-        manual_dags_examples_path = project_dir / "dags" / "examples" / "manual-dags"
-        assert (
-            not manual_dags_examples_path.exists()
-        ), "dag_factory folder should not exist in the generated project."
-
     # Verify environment.yml
     environment_path = project_dir / "environment.yml"
     assert (
         environment_path.exists()
     ), "environment.yml was not found in the generated project."
     content = environment_path.read_text(encoding="utf-8")
-    assert "dag_factory" in content, "The environment.yml does not contain dag_factory"
+
     assert (
         expected_folder_name in content
     ), "The environment.yml does not contain the project name as the env name"
+
+    # Check for the examples folder
+    dag_factory_examples_path = project_dir / "dags" / "examples" / "dag_factory"
+    manual_dags_examples_path = project_dir / "dags" / "examples" / "manual-dags"
+    if expect_examples:
+        if expect_dag_factory:
+            assert (
+                dag_factory_examples_path.exists()
+            ), "dag_factory folder was not found in the generated project."
+            assert (
+                "dag_factory" in content
+            ), "The environment.yml does not contain dag_factory"
+        else:
+            assert (
+                not manual_dags_examples_path.exists()
+            ), "manual_dags folder was not found in the generated project."
+            assert (
+                "dag_factory" not in content
+            ), "The environment.yml contains dag_factory"
+    else:
+        assert (
+            not dag_factory_examples_path.exists()
+        ), "dag_factory folder  should not exist in the generated project."
+        assert (
+            not manual_dags_examples_path.exists()
+        ), "manual_dags folder should not exist in the generated project."
 
     # For minio, check for minio-specific configuration based on expect_minio flag
     docker_compose_path = project_dir / "docker-compose.yml"
@@ -178,36 +202,38 @@ def test_generated_project(
 
 
 @pytest.mark.parametrize(
-    "extra_context, expected_folder_name, expect_dag_factory",
+    "extra_context, expected_folder_name, expect_dag_factory, expect_examples",
     [
         (
             {
                 "project_name": "My ML Project",
                 "use_minio": "yes",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "no",
                 "use_dag_factory": "yes",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
             },
             "my_ml_project",
             True,
+            False,
         ),
         (
             {
                 "project_name": "My ML Project",
                 "use_minio": "no",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "yes",
                 "use_dag_factory": "no",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
             },
             "my_ml_project",
             False,
+            True,
         ),
     ],
 )
 def test_full_directory_tree(
-    temp_dir, extra_context, expected_folder_name, expect_dag_factory
+    temp_dir, extra_context, expected_folder_name, expect_dag_factory, expect_examples
 ):
     template_dir = str(pathlib.Path(__file__).parent.parent)
 
@@ -246,23 +272,29 @@ def test_full_directory_tree(
         "my_package/utils/utils.py",
         ".gitignore",
         "local_inference.py",
-        "mlops_run.sh",
+        "mlops-run.sh",
     }
 
-    if expect_dag_factory:
-        expected_files.add("dags/examples/dag_factory/generate_dags.py")
-        expected_files.add("dags/examples/dag_factory/pipeline-config.yml")
-    else:
-        expected_files.add("dags/examples/manual_dags/example_dag.py")
-        expected_files.add("dags/examples/manual_dags/example_ml_mnist_autolog_dag.py")
-        expected_files.add("dags/examples/manual_dags/example_ml_mnist_dag.py")
-        expected_files.add("dags/examples/manual_dags/example_ml_single_step_dag.py")
+    if expect_examples:
+        if expect_dag_factory:
+            expected_files.add("dags/examples/dag_factory/generate_dags.py")
+            expected_files.add("dags/examples/dag_factory/pipeline-config.yml")
+        else:
+            expected_files.add("dags/examples/manual_dags/example_dag.py")
+            expected_files.add(
+                "dags/examples/manual_dags/example_ml_mnist_autolog_dag.py"
+            )
+            expected_files.add("dags/examples/manual_dags/example_ml_mnist_dag.py")
+            expected_files.add(
+                "dags/examples/manual_dags/example_ml_single_step_dag.py"
+            )
 
     actual_files = {
         str(path.relative_to(project_dir))
         for path in project_dir.glob("**/*")
         if path.is_file()
     }
+    print(actual_files)
     for expected in expected_files:
         assert (
             expected in actual_files
@@ -276,7 +308,7 @@ def test_full_directory_tree(
             {
                 "project_name": "My ML Project",
                 "use_minio": "yes",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "no",
                 "use_dag_factory": "yes",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
@@ -288,7 +320,7 @@ def test_full_directory_tree(
             {
                 "project_name": "My ML Project",
                 "use_minio": "no",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "no",
                 "use_dag_factory": "no",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
@@ -318,22 +350,20 @@ def test_post_gen_hook_executed(
         env_data = yaml.safe_load(f)
 
     dependencies = env_data.get("dependencies", [])
-    print(dependencies)
-    assert {
-        "pip": ["dag_factory"]
-    } in dependencies, (
-        "dag_factory should be in dependencies when use_dag_factory is 'yes'."
-    )
-
-    dag_factory_dir = project_dir / "dags/examples/dag_factory"
-    manual_dags_dir = project_dir / "dags/examples/manual_dags"
+    print(dependencies, expect_dag_factory)
 
     if expect_dag_factory:
-        assert dag_factory_dir.exists(), "dag_factory directory should exist."
-        assert not manual_dags_dir.exists(), "manual_dags directory should be removed."
+        assert {
+            "pip": ["dag_factory"]
+        } in dependencies, (
+            "dag_factory should be in dependencies when use_dag_factory is 'yes'."
+        )
     else:
-        assert not dag_factory_dir.exists(), "dag_factory directory should be removed."
-        assert manual_dags_dir.exists(), "manual_dags directory should exist."
+        assert {
+            "pip": ["dag_factory"]
+        } not in dependencies, (
+            "dag_factory should not be in dependencies when use_dag_factory is 'no'."
+        )
 
 
 @pytest.mark.parametrize(
@@ -343,7 +373,7 @@ def test_post_gen_hook_executed(
             {
                 "project_name": "My ML Project",
                 "use_minio": "yes",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "no",
                 "use_dag_factory": "yes",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",
@@ -353,7 +383,7 @@ def test_post_gen_hook_executed(
             {
                 "project_name": "My ML Project",
                 "use_minio": "no",
-                "show_airflow_dag_examples": "false",
+                "show_airflow_dag_examples": "no",
                 "use_dag_factory": "no",
                 "folder_name": "my_ml_project",
                 "package_name": "my_package",

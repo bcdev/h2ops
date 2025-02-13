@@ -4,6 +4,10 @@ channels:
 dependencies:
   - python >3.10,<3.13
   - cookiecutter
+  # We need the following as we need to preserve the comments in the environment.yml which Pyyaml does not support currently.
+  - pip
+  - pip:
+      - ruamel.yaml
   # Testing
   - pytest
   - ruff
