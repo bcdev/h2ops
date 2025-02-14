@@ -6,89 +6,75 @@
 # Once you are comfortable, please delete all these comments including me.
 
 
-def load_data(file_path: str):
+def load_data(path_to_data: str):
     """
     Function to load the preprocessed dataset.
 
     Args:
-        file_path (str): The path to the preprocessed data file.
+        path_to_data (str): The path to the preprocessed data file.
 
     Returns:
         The loaded preprocessed data.
     """
     print(f"Loading preprocessed data from {file_path}")
     # TODO: Implement actual data loading logic
-    return None  # Replace with actual dataset
+    data = ...
+    return data
 
 
-def prepare_data(data):
-    """
-    Function to prepare data for training by separating features (X) and target (y).
+class Trainer:
+    def __init__(self, model, train_data, test_data, hyperparams, trained_model_path):
+        self.model = model
+        self.train_data = train_data
+        self.test_data = test_data
+        self.hyperparams = hyperparams
+        self.trained_model_path = trained_model_path
 
-    Args:
-        data: The preprocessed dataset.
+    def train(self):
+        """
+        Function to train a machine learning model.
+        Returns:
+            The trained machine learning model.
+        """
+        print("Training model...")
+        # TODO: Implement model training logic with mlflow logging
+        # self.model.fit(self.train_data) or something like that using
+        # self.hyperparams
+        trained_model = ...
+        print("Evaluating model...")
+        # TODO: Implement model evaluation logic
+        print("Evaluation metrics: ...")
+        # TODO: Save model # save model to self.trained_model_path
+        print("Model training and evaluation complete!")
+        return trained_model
 
-    Returns:
-        tuple: A tuple containing the features (X) and target (y).
-    """
-    print("Preparing data for training...")
-    # TODO: Implement feature-target separation
-    X, y = None, None  # Replace with actual values
-    return X, y
+    def train_and_evaluate(self, file_path: str):
+        """
+        General training and evaluation pipeline.
 
-
-def train_model(X, y):
-    """
-    Function to train a machine learning model.
-
-    Args:
-        X: The feature data.
-        y: The target variable.
-
-    Returns:
-        The trained machine learning model.
-    """
-    print("Training model...")
-    # TODO: Implement model training logic
-    model = None  # Replace with actual model
-    return model
-
-
-def evaluate_model(model, X, y):
-    """
-    Function to evaluate the trained model's performance.
-
-    Args:
-        model: The trained machine learning model.
-        X: The feature data.
-        y: The target variable.
-    """
-    print("Evaluating model...")
-    # TODO: Implement model evaluation logic
-    print("Evaluation metrics: ...")  # Replace with actual evaluation
-
-
-def train_and_evaluate(file_path: str):
-    """
-    General training and evaluation pipeline.
-
-    Args:
-        file_path (str): The path to the preprocessed data.
-    """
-    data = load_data(file_path)
-    X, y = prepare_data(data)
-    model = train_model(X, y)
-    evaluate_model(model, X, y)
-    print("Model training and evaluation complete!")
+        Args:
+            file_path (str): The path to the preprocessed data.
+        """
+        data = self.load_data(file_path)
+        model = self.train_model(data)
+        self.evaluate_model(model, data)
+        print("Model training and evaluation complete!")
 
 
 if __name__ == "__main__":
     # Modify this path to point to the preprocessed data file
-    file_path = "path/to/your/processed_data.file"  # Update this with the actual path
-    train_and_evaluate(file_path)
+    file_path = "path/to/your/processed_data.file"
+    train_data, test_data = load_data(file_path)
+    from {{ cookiecutter.package_name }}.models.change_me_model import get_model
+    model = get_model()
+    hyperparams = {}
+    trained_model_path = "path/to/save/your/model"
+    trainer = Trainer(model, train_data, test_data, hyperparams,
+                   trained_model_path)
+    trainer.train()
 
     # ------------------------------------------------------
-    # HOW TO USE MLflow FOR EXPERIMENT TRACKING
+    # HOW TO USE MLFlow FOR EXPERIMENT TRACKING
     # ------------------------------------------------------
 
     """
@@ -149,6 +135,11 @@ if __name__ == "__main__":
                 # Currently the following libraries are supported:
                 # https://mlflow.org/docs/latest/search.html?q=log_model&check_keywords=yes&area=default
                 mlflow.<flavor>.log_model(model, path)
+                
+                # For logging custom models, define them as shown in 
+                # change_me_model_pipeline.py and then you can log models 
+                # like this:
+                mlflow.pyfunc.log_model(CustomModel(model), path)
 
     # 4. View your experiment runs
         Go to http://127.0.0.1:5000 to view your experiments

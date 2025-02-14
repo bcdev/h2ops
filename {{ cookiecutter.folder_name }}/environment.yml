@@ -18,6 +18,7 @@ dependencies:
   # This is only needed for an exmaple. If you dont need this, please feel free to remove it.
   - keras
   - tensorflow
+  - numpy =2.0.2
   # Testing
   - pytest-cov
   - pytest
