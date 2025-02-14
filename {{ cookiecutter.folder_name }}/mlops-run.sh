@@ -65,6 +65,8 @@ echo "Setting up directories..."
 create_directory "mlflow_artifacts"
 {% endif %}
 create_directory "logs"
+create_directory "scripts"
+create_directory "data"
 
 check_port "$JUPYTER_PORT"
 
