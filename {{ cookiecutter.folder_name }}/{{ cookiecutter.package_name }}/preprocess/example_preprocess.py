@@ -2,7 +2,6 @@
 
 import os
 import numpy as np
-
 from datetime import datetime
 
 from airflow.models import TaskInstance

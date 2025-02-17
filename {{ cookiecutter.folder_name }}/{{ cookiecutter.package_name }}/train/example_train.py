@@ -1,24 +1,25 @@
 # PLEASE DELETE ME AFTER YOU ARE DONE UNDERSTANDING!!
 
-import mlflow
-import mlflow.tensorflow
 import os
 import itertools
+from typing import TYPE_CHECKING
 
+import mlflow
+import mlflow.tensorflow
+from dotenv import load_dotenv
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import keras
 
-from dotenv import load_dotenv
-
-from {{ cookiecutter.package_name }}.example_model_pipeline import (
+from {{ cookiecutter.package_name }}.model_pipeline.example_model_pipeline import (
     ModelPipelineModel)
 from {{ cookiecutter.package_name }}.utils.utils import (
-    get_or_create_experiment,
-    get_latest_data_path,
-    get_s3_client,
+    get_or_create_experiment
 )
 from {{ cookiecutter.package_name }}.models.example_model import get_model
 from {{ cookiecutter.package_name }}.dataloader.example_data import load_data
+
+if TYPE_CHECKING:
+    from airflow.models import TaskInstance
 
 load_dotenv()
 
@@ -122,7 +123,7 @@ class MnistTrainer:
         print("Training complete. Model logged in MLflow.")
 
 
-def train(ti):
+def train(ti: "TaskInstance"=None):
     """
     The argument `ti` provides a feature called `XCom` that means
     Cross-Communications which facilitates sharing small amounts of data from
@@ -138,9 +139,12 @@ def train(ti):
 
     # Here we pull data from the preprocessing step that gives us the path to
     # the stored data
-    pulled_data = ti.xcom_pull(task_ids="preprocessing",
-                               key="preprocessed_path")
-    train_data, test_data, s3_data_path = load_data()
+    preprocessed_path = ti.xcom_pull(task_ids="ml.preprocess",
+                                     key="preprocessed_path")
+    bucket_name = ti.xcom_pull(task_ids="ml.preprocess",
+                               key="bucket_name")
+    train_data, test_data, s3_data_path = load_data(preprocessed_path,
+                                                    bucket_name)
     model = get_model()
     hyperparams = {"epochs": [1, 2]}
     trained_model_path = "mnist_model_final"
