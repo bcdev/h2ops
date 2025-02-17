@@ -24,37 +24,21 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
     - Postprocessing
     """
     def __init__(self, trained_model):
-        """
-        When you log your model using mlflow.pyfunc.log_model(
-        ModelPipelineModel(model)), you can pass in your model, which is then
-        uses as trained_model here.
-        """
         self.model = trained_model
 
     def preprocess(self, input_data):
-        """
-        This currently just calls a preprocess_dummy() to show how to invoke
-        preprocess functions from this model.
-        Update this to use your preprocessing script that you have used for
-        training and also want to use before running predictions on the input
-        data.
-        """
-        from {{ cookiecutter.package_name }} import preprocess_dummy
+        from {{ cookiecutter.package_name }} import preprocess_single_image
 
         print("Preprocessing input data...")
-        preprocess_dummy()
-        return input_data
+        processed = preprocess_single_image(input_data)
+        return processed
 
     def postprocess(self, predictions):
-        """
-        This currently just calls a postprocess_dummy() to show how to invoke
-        postprocess functions from this model.
-        """
-        from {{ cookiecutter.package_name }} import postprocess_dummy
+        from {{ cookiecutter.package_name }} import postprocess
 
         print("Postprocessing predictions...")
-        postprocess_dummy()
-        return predictions
+        postprocessed = postprocess(predictions)
+        return postprocessed
 
     def predict(self, context, model_input):
         """

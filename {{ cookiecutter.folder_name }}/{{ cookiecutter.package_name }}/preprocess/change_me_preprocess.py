@@ -69,6 +69,10 @@ def preprocess(file_path: str):
     """
     General preprocessing pipeline. Includes loading, cleaning, and feature engineering.
 
+    Make sure that your function can handle both single and batch of data if
+    you would also like to perform these preprocessing steps before the
+    predictions.
+
     Args:
         file_path (str): The path to the data file.
 
@@ -87,5 +91,5 @@ def preprocess(file_path: str):
 
 if __name__ == "__main__":
     # Modify the file path here to the location of your data file
-    file_path = "path/to/your/data.file"  # Update this path
+    file_path = "path/to/your/data.file"
     processed_data = preprocess(file_path)

@@ -26,8 +26,6 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
     def preprocess(self, input_data):
         """
         Change me!
-        This currently just calls a preprocess_dummy() to show how to invoke
-        preprocess functions from this model.
         Update this to use your preprocessing script that you have used for
         training and also want to use before running predictions on the input
         data.

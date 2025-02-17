@@ -16,7 +16,7 @@ def load_data(path_to_data: str):
     Returns:
         The loaded preprocessed data.
     """
-    print(f"Loading preprocessed data from {file_path}")
+    print(f"Loading preprocessed data from {path_to_data}")
     # TODO: Implement actual data loading logic
     data = ...
     return data
@@ -38,40 +38,28 @@ class Trainer:
         """
         print("Training model...")
         # TODO: Implement model training logic with mlflow logging
-        # self.model.fit(self.train_data) or something like that using
-        # self.hyperparams
-        trained_model = ...
         print("Evaluating model...")
         # TODO: Implement model evaluation logic
-        print("Evaluation metrics: ...")
+        print("Saving model...")
         # TODO: Save model # save model to self.trained_model_path
         print("Model training and evaluation complete!")
-        return trained_model
-
-    def train_and_evaluate(self, file_path: str):
-        """
-        General training and evaluation pipeline.
-
-        Args:
-            file_path (str): The path to the preprocessed data.
-        """
-        data = self.load_data(file_path)
-        model = self.train_model(data)
-        self.evaluate_model(model, data)
-        print("Model training and evaluation complete!")
 
 
-if __name__ == "__main__":
+def train():
     # Modify this path to point to the preprocessed data file
     file_path = "path/to/your/processed_data.file"
     train_data, test_data = load_data(file_path)
-    from {{ cookiecutter.package_name }}.models.change_me_model import get_model
+    from {{cookiecutter.package_name}}.models.change_me_model import get_model
     model = get_model()
     hyperparams = {}
     trained_model_path = "path/to/save/your/model"
     trainer = Trainer(model, train_data, test_data, hyperparams,
-                   trained_model_path)
+                      trained_model_path)
     trainer.train()
+
+if __name__ == "__main__":
+    train()
+
 
     # ------------------------------------------------------
     # HOW TO USE MLFlow FOR EXPERIMENT TRACKING
@@ -116,6 +104,8 @@ if __name__ == "__main__":
         # Use mlflow.autolog() to log everything that mlflow can log 
         # automatically
         # (https://mlflow.org/docs/latest/python_api/mlflow.html?highlight=log_artifacts#mlflow.autolog)
+        # You can also use mlflow.autolog() along with the usual logging to log
+        # parameters or text or images that autolog does not log automatically
         ########################################################################
         mlflow.autolog()
 

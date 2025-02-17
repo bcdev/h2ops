@@ -7,6 +7,9 @@
 def postprocess(data):
     """
     Add your postprocess stuff here.
+
+    You should define your postprocessing method that does something with
+    the model's prediction here.
     """
     # TODO: Implement postprocessing
     return data

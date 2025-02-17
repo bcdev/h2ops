@@ -18,7 +18,7 @@ from {{ cookiecutter.package_name }}.utils.utils import (
     get_s3_client,
 )
 from {{ cookiecutter.package_name }}.models.example_model import get_model
-from {{ cookiecutter.package_name }}.dataloader.data import load_data
+from {{ cookiecutter.package_name }}.dataloader.example_data import load_data
 
 load_dotenv()
 
@@ -86,11 +86,31 @@ class MnistTrainer:
                     # it needs to run.
                     # Please make sure that none of the __init__.py files are
                     # completely empty as this creates some issues with
-                    # mlflow logging. You can literally just add a comment.
+                    # mlflow logging. You can literally just add a # to the
+                    # __init__ file. This is needed because while serializing
+                    # the files, empty files have 0 bytes of content and that
+                    # creates issues with the urllib3 upload to S3 (this
+                    # happens inside MLFlow)
                     mlflow.pyfunc.log_model(
                         python_model=ModelPipelineModel(self.model),
                         artifact_path=artifact_path,
+                        # Code paths are required basically to package your
+                        # code along withe model if you have a custom model
+                        # that for e.g. might need a preprocessing script.
+                        # See here for more details:
+                        # https://mlflow.org/docs/latest/model/dependencies.html#id12
                         code_paths=["{{ cookiecutter.package_name }}"],
+                        # sometimes when you deploy and run your model
+                        # inference, you might get errors like Module Not
+                        # found, for those cases, you can specify the
+                        # libraries that your code needs. For e.g.,
+                        # in preprocess script, I need boto3, so I need to
+                        # specify it here.
+                        # You can also specify conda env instead of pip if
+                        # needed
+                        # See here for more details:
+                        # https://mlflow.org/docs/latest/python_api/mlflow.pyfunc.html#mlflow.pyfunc.log_model
+                        extra_pip_requirements=["boto3==1.36.21"]
                     )
 
                     model_uri = mlflow.get_artifact_uri(artifact_path)
@@ -102,7 +122,24 @@ class MnistTrainer:
         print("Training complete. Model logged in MLflow.")
 
 
-def train():
+def train(ti):
+    """
+    The argument `ti` provides a feature called `XCom` that means
+    Cross-Communications which facilitates sharing small amounts of data from
+    one task to another.
+    This argument is provided automatically by airflow to its tasks.
+    Since this will be one of the tasks in the Airlfow DAG, we can access it
+    here. But if you want to run this without airflow, you can remove the
+    Airflow related code.
+    See the usage below for ti.xcom_pull and to.xcom_push if you need to share
+    the data to downstream tasks or get the task from upstream tasks
+    respectively.
+    """
+
+    # Here we pull data from the preprocessing step that gives us the path to
+    # the stored data
+    pulled_data = ti.xcom_pull(task_ids="preprocessing",
+                               key="preprocessed_path")
     train_data, test_data, s3_data_path = load_data()
     model = get_model()
     hyperparams = {"epochs": [1, 2]}
