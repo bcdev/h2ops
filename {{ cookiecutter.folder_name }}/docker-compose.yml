@@ -1,3 +1,5 @@
+# 🚨 WARNING: Changes to this file may break deployments. Consult the team before modifying! 🚨
+
 x-airflow-common:
   &airflow-common
   build:

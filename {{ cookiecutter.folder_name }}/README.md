@@ -158,3 +158,30 @@ Prerequisites
 - We can now run inference against this server on the `/invocations` endpoint,
 - run `local_inference.py` after changing your input data.
 
+
+## ❌ DO NOT MODIFY THESE FILES ❌
+
+To maintain stability and consistency, please do not update or modify the following files:
+
+- Dockerfiles
+- mlops-run.sh
+- docker-compose.yml
+
+These files are essential for the proper functioning of the system. If changes 
+are absolutely necessary, please consult the team and document the reasons clearly.
+
+❗ Why You Shouldn't Change These Files mentioned above ❗
+
+- Editing them may unleash chaos. Okay, maybe not chaos, but unexpected consequences!
+- Your future self (and your teammates) will thank you. Trust us.
+- It has been meticulously crafted to serve its purpose—no more, no less.
+
+🤔 But What If I Really Need to Change It?
+
+If you absolutely must make modifications, please:
+
+1. Take a deep breath and be sure it’s necessary.
+2. Consult your team (or at least leave a convincing justification in your commit message).
+3. Triple-check that you aren’t breaking something sacred.
+4. Proceed with caution and a great sense of responsibility.
+

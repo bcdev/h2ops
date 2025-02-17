@@ -1,3 +1,5 @@
+# 🚨 WARNING: Do not modify this Dockerfile without consulting the team! 🚨
+
 FROM python:3.12-slim
 
 COPY requirements.txt requirements.txt

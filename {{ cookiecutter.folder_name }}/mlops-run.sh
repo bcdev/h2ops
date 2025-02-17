@@ -1,4 +1,5 @@
 #!/bin/bash
+# 🚨 WARNING: Do not modify this script as might break! 🚨
 
 CACHE=false
 JUPYTER_PORT=8895
