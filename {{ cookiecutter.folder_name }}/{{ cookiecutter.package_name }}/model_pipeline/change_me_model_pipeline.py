@@ -20,6 +20,10 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
         When you log your model using mlflow.pyfunc.log_model(
         ModelPipelineModel(model)), you can pass in your model, which is then
         uses as trained_model here.
+
+        This saved model will then be used for inference and execute the
+        pipeline as defined in the predict() method
+
         """
         self.model = trained_model
 
