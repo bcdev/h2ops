@@ -27,10 +27,10 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
         self.model = trained_model
 
     def preprocess(self, input_data):
-        from {{ cookiecutter.package_name }} import preprocess_single_image
+        from {{ cookiecutter.package_name }} import preprocess_single_sample
 
         print("Preprocessing input data...")
-        processed = preprocess_single_image(input_data)
+        processed = preprocess_single_sample(input_data)
         return processed
 
     def postprocess(self, predictions):
