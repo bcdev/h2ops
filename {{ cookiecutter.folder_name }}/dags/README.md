@@ -1,6 +1,6 @@
 # Getting Started with Airflow
 
-Hey, welcome!
+Hey, welcome!  ✨
 
 Here, we will learn how to define DAGs using Airflow.
 
