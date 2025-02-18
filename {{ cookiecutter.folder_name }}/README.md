@@ -1,11 +1,47 @@
-{{ cookiecutter.project_name }}
+{{ cookiecutter.project_name|capitalize }}
+
+## You made it!
+Congratulations for making it here! You are on the right track :)
+
+Please read this completely before starting your journey.
+
+If you face any issues or have any feedback, please share it with us.
 
 ## Getting Started with MLOps
 
 Now that you have created a project using the template provided, please follow
 the steps below to start your ML journey.
 
-1. Create and activate mamba environment.
+### 0. Git Fundamentals. 
+First, we need to initialize a Git repository to make the initial commit.
+```bash
+  git init -b main
+  git add .
+  git commit -m "Initial commit"
+```
+
+Next, create a repository in Github. Once created, copy the remote repository 
+URL. Open the terminal with this project as the current working directory.
+Then, replace the REMOTE-URL with your repo's URL on Github
+```bash
+  git remote add origin REMOTE-URL
+```
+Verify if the remote URL was set correctly.
+```bash
+  git remote -v
+```
+To push the changes, do the following:
+```bash
+  git push origin main
+```
+Now you have created a git repository with an initial commit of this project.
+To proceed, create a new branch and start working in it.
+```
+  git checkout -b name-of-your-branch
+```
+
+### 1. Create and activate mamba environment.
+
 You can update the `environment.yml` to include your libraries, or you can 
 update them later as well.
 ```bash
@@ -19,7 +55,10 @@ update the mamba env after adding new libraries in `environment.yml`, do this:
   mamba env update
 ```
 
-3. Start the services:
+### 2. Start the services:
+
+The following script spins up containers for Airflow, MLFLow, MinIO (if you chose it)
+and Jupyter Lab (not in a container).
 ```bash
   chmod +x mlops-run.sh
 ```
@@ -35,7 +74,7 @@ runs, but the user should not worry about it or change them if not needed.
 -b -> to build the docker images before starting the containers
 ```
 
-When you run this for the first time, make sure you use the `-b` flag as it builds
+NOTE: When you run this for the first time, make sure you use the `-b` flag as it builds
 the images for the first time as shown above.
 Next time when you start it again, you start it without the flag as it saves 
 time by not building the same images again:
@@ -43,7 +82,7 @@ time by not building the same images again:
   ./mlops-run.sh
 ```
 
-4. Stopping the services:
+### 3. Stopping the services:
 
 You should stop these container services when you're done working 
 with your project, need to free up system resources, or want to apply some updates.
@@ -52,7 +91,7 @@ To gracefully stop the services, run this in the terminal where you started them
   ctrl + C
 ```
 
-### Accessing the services
+### 4. Accessing the services
 
 Wait for the services to start (usually take 2-3 mins, might take longer if you start it without cache)
 
@@ -68,21 +107,29 @@ Wait for the services to start (usually take 2-3 mins, might take longer if you 
     - password: `minio123`
 
 
-### Development Workflow
+## Development Workflow
 
-1. In the JupyterLab that was opened up in your browser, navigate to the 
-`notebooks` folder and create notebooks where you can experiment with your 
-data, models and log metrics, params and artifacts to MLFlow. 
-There are some example notebooks provided in the `examples` 
-directory tp help you get started. If you chose MinIO as your local S3, use it 
+1. Once the services start, the JupyterLab opens up in your browser. Now, 
+navigate to the `notebooks` folder and create notebooks where you can experiment 
+with your data, models and log metrics, params and artifacts to MLFlow. 
+There are some starter notebooks provided in the `examples` folder which give
+introduction on how to use MLFlow to track experiments and also how to perform 
+inference on the MLFlow models. If you chose MinIO as your local S3, use it 
 to mimic API calls to real S3 to make sure all works when this goes into 
 production.
 2. Once you have your logic ready for the data ingestion, preprocessing and 
-training, refactor it to production code in the `src/` directory.
+training, refactor it to production code in the `src/` directory by modifying 
+the files starting with `change_me_*`. If you chose to have the examples in the 
+repository while creating this project, you will find files starting with 
+`example_*`, which you can have a look for starting your refactor from Jupyter to
+production code.
 3. Create tests in the `tests/` directory to test your data preprocessing 
 methods and data schema etc. Make them green.
-4. Create a new dag in the `dags` folder using the `example_dag.py` template provided.
-**NOTE**: This will be simplified in the future.
+4. Now you are ready to use Airflow. Look for `change_me_*` files inside the 
+`dags` folder. These files will have comments on how to create DAGs.
+If you chose to have the examples in the 
+repository while creating this project, you will find files starting with 
+`example_*`, use them to understand how DAGs are created to creat your own.
 5. Now you can see your DAG in the [Airflow UI](http://localhost:8080). 
 You can trigger by clicking the 
 `Trigger DAG ▶️` button. You can now view the logs of
@@ -92,16 +139,18 @@ initialization for MLFLow artifact storage, you can view them in the MinIO UI to
 check if everything was generated correctly.
 7. While the model is training, you can track the model experiments on the 
 [MLFlow UI](http://localhost:5000).
+8. Once your model is finished training, you can now deploy it either using 
+docker (recommended) or locally as shown in the next section.
 
 
-### Deployment workflow
+## Deployment workflow
 
 Once you have a model trained, you can deploy it locally either as
 container or serve it directly from MinIO S3.
 We recommend to deploy it as a container as this makes sure that it has its 
 own environment for serving.
 
-#### Deploying Model as a Container locally
+### Deploying Model as a Container locally
 
 Since we have been working with docker containers so far, all the environment 
 variables have been set for them, but now as we need to deploy them,
@@ -115,11 +164,15 @@ can pull the required models from MinIO S3.
   export AWS_SECRET_ACCESS_KEY=minio123
 ```
 
-Once we have this variables exported, find out the `run_id` of the model you 
+Once we have this variables exported, find out the `run_id` or the `s3_path` of the model you 
 want to deploy from the MLFlow UI and run the following command:
 
 ```bash
-  mlflow models build-docker -m runs:/<run-id>/model -n <name-of-your-container> --enable-mlserver
+  mlflow models build-docker -m runs:/<run-id>/model -n <name-of-your-container> --enable-mlserver --env-manager conda
+```
+or 
+```bash
+  mlflow models build-docker -m <s3_path> -n <name-of-your-container> --enable-mlserver --env-manager conda
 ```
 
 After this finishes, you can run the docker container by:
@@ -131,10 +184,10 @@ After this finishes, you can run the docker container by:
 Now you have an endpoint ready at `127.0.0.1:5002`.
 
 Have a look at `notebooks/examples/mlflow_docker_inference.ipynb` for an 
-example on how to get predictions
+example on how to get the predictions.
 
 
-####  Deploying local inference server
+###  Deploying local inference server
 
 Prerequisites
 
