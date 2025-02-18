@@ -1,4 +1,4 @@
-name: Unittest Terraflow
+name: Unittest H2Ops
 
 on:
   push:
