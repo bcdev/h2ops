@@ -38,7 +38,7 @@ default:
     # Please change the start date as today (the day you will run this dag for the first time) and keep it static.
     start_date: "2025-02-01"
 
-change_your_dag_name_here_dag:
+change_your_dag_name_here_df_dag:
   default_args:
     owner: "change_your_name_here"
   description: "change your description here"

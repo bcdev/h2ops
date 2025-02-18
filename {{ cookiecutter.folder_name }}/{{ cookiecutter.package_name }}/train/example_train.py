@@ -139,9 +139,9 @@ def train(ti: "TaskInstance"=None):
 
     # Here we pull data from the preprocessing step that gives us the path to
     # the stored data
-    preprocessed_path = ti.xcom_pull(task_ids="ml.preprocess",
+    preprocessed_path = ti.xcom_pull(task_ids="ml.preprocess_task",
                                      key="preprocessed_path")
-    bucket_name = ti.xcom_pull(task_ids="ml.preprocess",
+    bucket_name = ti.xcom_pull(task_ids="ml.preprocess_task",
                                key="bucket_name")
     train_data, test_data, s3_data_path = load_data(preprocessed_path,
                                                     bucket_name)

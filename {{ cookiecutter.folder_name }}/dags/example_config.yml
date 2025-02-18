@@ -2,7 +2,7 @@ default:
   default_args:
     start_date: "2025-02-01"
 
-add_your_dag_name_here_dag:
+add_your_dag_name_here_df_dag:
   default_args:
     owner: "add_your_name_here"
   description: "add your description here"

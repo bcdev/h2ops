@@ -1,10 +1,11 @@
 # PLEASE DELETE ME AFTER YOU ARE DONE UNDERSTANDING!!
 
 import os
+from typing import TYPE_CHECKING
+
 import numpy as np
 from datetime import datetime
 
-from airflow.models import TaskInstance
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 from tensorflow.keras.datasets import mnist
@@ -12,6 +13,10 @@ from tensorflow.keras.datasets import mnist
 from {{ cookiecutter.package_name }}.utils.utils import get_s3_client
 
 load_dotenv()
+
+if TYPE_CHECKING:
+    from airflow.models import TaskInstance
+
 
 s3 = get_s3_client(
     endpoint_url=os.getenv("MLFLOW_S3_ENDPOINT_URL"),
@@ -67,10 +72,10 @@ def save_data(X_train, y_train, X_test, y_test, path, timestamp):
 
     os.remove(path)
     print(f"Preprocessed data stored to MinIO: {object_path}")
-    return object_path
+    return object_path, bucket_name
 
 
-def preprocess(ti: TaskInstance):
+def preprocess(ti: "TaskInstance" = None):
     # For training data
     (X_train, y_train), (X_test, y_test) = load_data()
 
@@ -81,10 +86,11 @@ def preprocess(ti: TaskInstance):
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     path = f"/tmp/mnist_processed_{timestamp}.npz"
 
-    stored_path = save_data(X_train_processed, y_train, X_test_processed,
+    stored_path, bucket_name = save_data(X_train_processed, y_train, X_test_processed,
                            y_test, path,
               timestamp)
     ti.xcom_push(key="preprocessed_path", value=stored_path)
+    ti.xcom_push(key="bucket_name", value=bucket_name)
     print("Preprocessing complete!")
 
 

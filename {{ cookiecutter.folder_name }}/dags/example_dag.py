@@ -13,7 +13,7 @@ default_args = {
 }
 
 with DAG(
-    "add_your_dag_name_here_dag",
+    "add_your_dag_name_here_py_dag",
     default_args=default_args,
     description="add your description here",
     schedule_interval="0 0 * * *",
@@ -29,12 +29,12 @@ with DAG(
     with TaskGroup(group_id="ml", tooltip="this is a ml task group") as ml_group:
 
         preprocess_task = PythonOperator(
-            task_id="preprocess",
+            task_id="preprocess_task",
             python_callable=preprocess,
         )
 
         train_task = PythonOperator(
-            task_id="train",
+            task_id="train_task",
             python_callable=train
         )
 

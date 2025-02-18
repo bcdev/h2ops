@@ -55,7 +55,7 @@ default_args = {
 # start_date is in the past.
 # To learn more about cron expressions, see here: https://crontab.guru/.
 with DAG(
-    "change_your_dag_name_here_dag",
+    "change_your_dag_name_here_py_dag",
     default_args=default_args,
     description="change your description here",
     schedule_interval="0 0 * * *",
@@ -80,7 +80,7 @@ with DAG(
         # You can pass parameters as follows to your python callable, if required.
         # op_kwargs={"your_param": "your_value"},
         change_task_2 = PythonOperator(
-            task_id="preprocess",
+            task_id="preprocess_task",
             python_callable=preprocess,  # Replace with your actual function
             # op_kwargs={"your_param": "your_value"}
         )
@@ -91,7 +91,7 @@ with DAG(
         # your `{{ cookiecutter.package_name }}` package. It is currently set
         # to `train` as an example which is imported above.
         change_task_3 = PythonOperator(
-            task_id="train",
+            task_id="train_task",
             python_callable=train  # Replace with your actual function
         )
 
