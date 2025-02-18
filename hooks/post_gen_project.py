@@ -103,5 +103,6 @@ def main():
             )
             remove_file(full_file_path)
 
-    if __name__ == "__main__":
-        sys.exit(main())
+
+if __name__ == "__main__":
+    sys.exit(main())

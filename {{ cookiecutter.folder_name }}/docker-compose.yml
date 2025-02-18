@@ -23,6 +23,8 @@ x-airflow-common:
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
+    - ./scripts:/opt/airflow/scripts
+    - ./data:/opt/airflow/data
     - ./{{ cookiecutter.package_name }}:/opt/airflow/{{ cookiecutter.package_name }}
     {% if cookiecutter.use_minio == "no" %}
     - ./mlflow_artifacts:/mlflow_artifacts

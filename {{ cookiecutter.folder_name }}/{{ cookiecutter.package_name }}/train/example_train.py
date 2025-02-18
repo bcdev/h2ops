@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 import mlflow
 import mlflow.tensorflow
-import numpy
+import numpy as np
 from dotenv import load_dotenv
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import keras
@@ -28,8 +28,8 @@ load_dotenv()
 class MnistTrainer:
     def __init__(self,
                  model: keras.Sequential,
-                 train_data: numpy.ndarray,
-                 test_data: numpy.ndarray,
+                 train_data: np.ndarray,
+                 test_data: np.ndarray,
                  hyperparams: dict[str, list],
                  trained_model_path: str,
                  s3_data_path: str

@@ -13,6 +13,7 @@
 # PLEASE DELETE ME AFTER YOU ARE DONE UNDERSTANDING!!
 
 import keras
+import numpy as np
 import mlflow.pyfunc
 
 
@@ -27,14 +28,14 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
     def __init__(self, trained_model: keras.Sequential):
         self.model = trained_model
 
-    def preprocess(self, input_data: numpy.ndarray):
+    def preprocess(self, input_data: np.ndarray):
         from {{ cookiecutter.package_name }} import preprocess_single_sample
 
         print("Preprocessing input data...")
         processed = preprocess_single_sample(input_data)
         return processed
 
-    def postprocess(self, predictions: numpy.ndarray):
+    def postprocess(self, predictions: np.ndarray):
         from {{ cookiecutter.package_name }} import postprocess
 
         print("Postprocessing predictions...")
@@ -42,7 +43,7 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
         return postprocessed
 
     def predict(self, context: mlflow.pyfunc.PythonModelContext, model_input:
-    numpy.ndarray):
+    np.ndarray):
         """
         Runs full pipeline: Preprocess -> Model Inference -> Postprocess.
         """
