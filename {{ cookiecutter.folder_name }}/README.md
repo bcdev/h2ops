@@ -11,6 +11,8 @@ If you face any issues or have any feedback, please share it with us.
 
 Any files or folders marked with `*` are off-limits—no need to change, modify, 
 or even worry about them. Just focus on the ones without the mark!
+
+Any files or folders marked with `#` can be extended, but carefully.
 ```
 ├── .github/             # GitHub Actions workflows (you are provided with a starter CI)
 ├── dags/                # Airflow DAG definitions 
@@ -30,6 +32,7 @@ or even worry about them. Just focus on the ones without the mark!
 ├── tests/               # Unit and integration tests
 ├── data/                # If you have data locally, move it here and use it so that airflow has access to it.
 ├── README.md            # The one you are reading :p. Feel free to update it based on your project.
+├── .env * #             # Your environment variables that docker compose and python scripts can use (already added to .gitignore)
 ├── environment.yml      # Libraries required for local mlops and your project
 ├── mlflow-artifacts/ *  # MLflow artifacts (created if you don't choose minio)
 ├── mlops_run.sh *       # Shell script to start MLOps services locally 
@@ -256,6 +259,9 @@ Prerequisites
 ## Accessing/Viewing these services in Pycharm
 
 If you are a Pycharm user, you are amazing!
+
+If not, please consider using it as it provides a lot of functionalities in its community version.
+
 Now, let's use one of its features called Services. It is a small hexagonal button
 with the play icon inside it. You will find it in one of the tool windows.
 

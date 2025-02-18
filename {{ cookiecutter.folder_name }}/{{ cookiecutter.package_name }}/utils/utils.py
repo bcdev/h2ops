@@ -5,7 +5,7 @@ import boto3
 import mlflow
 
 
-def get_or_create_experiment(experiment_name):
+def get_or_create_experiment(experiment_name: str):
     """
     Retrieve the ID of an existing MLflow experiment or create a new one if it doesn't exist.
 
@@ -81,7 +81,7 @@ def get_latest_data_path(
     return latest_file, latest_file.split("/")[-1]
 
 
-def show_datasets_info(run_id):
+def show_datasets_info(run_id: str):
     """
     Display readable information about all datasets used in an MLflow run
     """
