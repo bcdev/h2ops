@@ -64,6 +64,9 @@ def main():
     show_airflow_examples = (
         "{{ cookiecutter.show_airflow_dag_examples }}".strip().lower()
     )
+    show_ml_package_examples = (
+        "{{ cookiecutter.show_ml_package_examples }}".strip().lower()
+    )
 
     if use_dag_factory != "yes":
         to_be_deleted_deps.append("pip")
@@ -72,20 +75,33 @@ def main():
     env_file = pathlib.Path().cwd() / "environment.yml"
     modify_environment_yaml(env_file, to_be_deleted_deps)
 
-    # TODO: Dag factory flag should now show templates instead of examples
-    # if use_dag_factory != "yes":
-    #     dir_to_remove = os.path.join(os.getcwd(), "dags/examples/dag_factory")
-    #     remove_directory(dir_to_remove)
-    # else:
-    #     dir_to_remove = os.path.join(os.getcwd(), "dags/examples/manual_dags")
-    #     remove_directory(dir_to_remove)
-
     if show_airflow_examples != "yes":
-        dir_to_remove = os.path.join(os.getcwd(), "dags/examples/dag_factory")
-        remove_directory(dir_to_remove)
-        dir_to_remove = os.path.join(os.getcwd(), "dags/examples/manual_dags")
-        remove_directory(dir_to_remove)
+        if use_dag_factory != "yes":
+            remove_file(os.path.join(os.getcwd(), "dags/example_config.yml"))
+        else:
+            remove_file(os.path.join(os.getcwd(), "dags/example_dag.py"))
 
+    if use_dag_factory != "yes":
+        remove_file(os.path.join(os.getcwd(), "dags/change_me_config.yml"))
+        remove_file(os.path.join(os.getcwd(), "dags/change_me_generate_dags.py"))
+    else:
+        remove_file(os.path.join(os.getcwd(), "dags/change_me_dag.py"))
 
-if __name__ == "__main__":
-    sys.exit(main())
+    if show_ml_package_examples != "yes":
+        file_paths_config = [
+            "dataloader/example_data.py",
+            "model_pipeline/example_model_pipeline.py",
+            "models/example_model.py",
+            "postprocess/example_postprocess.py",
+            "preprocess/example_preprocess.py",
+            "train/example_train.py",
+        ]
+
+        for file_path_relative in file_paths_config:
+            full_file_path = os.path.join(
+                os.getcwd(), "{{ cookiecutter.package_name }}", file_path_relative
+            )
+            remove_file(full_file_path)
+
+    if __name__ == "__main__":
+        sys.exit(main())

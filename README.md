@@ -1,14 +1,13 @@
-# Terraflow: MLOps Project Template
+# H2Ops: MLOps Project Template
 
-[![Unittest Terraflow](https://github.com/bcdev/terraflow/actions/workflows/unittest.yml/badge.svg)](https://github.com/bcdev/terraflow/actions/workflows/unittest.yml)
+[![Unittest H2Ops](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml/badge.svg)](https://github.com/bcdev/terraflow/actions/workflows/unittest.yml)
 
-![Terraflow](assets/terraflow.png)
+![H2Ops](assets/h2ops.png)
 
-TerraFlow combines "Terra" (Latin for Earth) and "Flow" (signifying seamless automation), 
-representing a MLOps tool that streamlines the flow of geospatial data and machine learning 
-models for Earth Observation. Just as Airflow automates workflows and MLflow manages ML 
-lifecycles, TerraFlow would orchestrate the entire pipeline for remote sensing ML-based 
-projects using them.
+H2Ops blends "H₂O" (water) with "Ops" (denoting MLOps), embodying an MLOps framework designed for 
+the streamlined operation of water-focused Earth Observation projects. It would
+manage the complete pipeline for remote sensing applications centered on water
+services using these powerful tools.
 
 It is a comprehensive template (_in-development_) for machine learning projects
 incorporating MLOps practices using `Airflow`, `MLFlow`, `JupyterLab` and `Minio`.
