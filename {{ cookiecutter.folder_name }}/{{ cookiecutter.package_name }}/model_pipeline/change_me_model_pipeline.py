@@ -10,12 +10,14 @@
 # FastAPI or Flask server to do that or you can make use of MLFlow's custom
 # python models as shown below.
 
-import mlflow.pyfunc
+from typing import Any
+
+import mlflow
 
 
 # To create your own custom model, extend this class: mlflow.pyfunc.PythonModel
 class ModelPipelineModel(mlflow.pyfunc.PythonModel):
-    def __init__(self, trained_model):
+    def __init__(self, trained_model: Any):
         """
         When you log your model using mlflow.pyfunc.log_model(
         ModelPipelineModel(model)), you can pass in your model, which is then
@@ -27,7 +29,7 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
         """
         self.model = trained_model
 
-    def preprocess(self, input_data):
+    def preprocess(self, input_data: Any):
         """
         Change me!
         Update this to use your preprocessing script that you have used for
@@ -37,7 +39,7 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
         print("Preprocessing input data...")
         return input_data
 
-    def postprocess(self, predictions):
+    def postprocess(self, predictions: Any):
         """
         Change me! (if required)
         There could be some postprocessing that you would like to do after
@@ -46,7 +48,7 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
         print("Postprocessing predictions...")
         return predictions
 
-    def predict(self, context, model_input):
+    def predict(self, context: mlflow.pyfunc.PythonModelContext, model_input: Any):
         """
         Runs full pipeline: Preprocess -> Model Inference -> Postprocess.
 

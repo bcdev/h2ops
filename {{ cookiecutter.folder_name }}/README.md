@@ -93,6 +93,8 @@ update the mamba env after adding new libraries in `environment.yml`, do this:
 ```bash
   mamba env update
 ```
+To reflect these changes in Airflow as well, please restart the services as shown
+in the next step.
 
 ### 2. Start the services:
 

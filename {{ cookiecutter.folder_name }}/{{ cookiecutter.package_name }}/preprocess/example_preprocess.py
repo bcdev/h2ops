@@ -29,7 +29,7 @@ def load_data():
     return mnist.load_data()
 
 
-def feature_engineering(X, is_single_input=False):
+def feature_engineering(X: np.ndarray, is_single_input:bool=False):
     """
     Preprocess input data - works for both single samples and batches
 
@@ -54,7 +54,14 @@ def feature_engineering(X, is_single_input=False):
     return X
 
 
-def save_data(X_train, y_train, X_test, y_test, path, timestamp):
+def save_data(
+        X_train: np.ndarray,
+        y_train: np.ndarray,
+        X_test: np.ndarray,
+        y_test: np.ndarray,
+        path: str,
+        timestamp: str
+):
     np.savez_compressed(
         path, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test
     )
@@ -94,7 +101,7 @@ def preprocess(ti: "TaskInstance" = None):
     print("Preprocessing complete!")
 
 
-def preprocess_single_sample(sample):
+def preprocess_single_sample(sample: np.ndarray):
     """
     Preprocess a single input sample
 
@@ -107,7 +114,7 @@ def preprocess_single_sample(sample):
     return feature_engineering(sample, is_single_input=True)
 
 
-def preprocess_batch_samples(samples):
+def preprocess_batch_samples(samples: np.ndarray):
     """
     Preprocess a batch of input samples
 

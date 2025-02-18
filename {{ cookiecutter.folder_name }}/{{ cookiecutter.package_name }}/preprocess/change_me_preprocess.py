@@ -3,23 +3,26 @@
 # You can run me as is to see how everything works.
 # Once you are comfortable, please delete all these comments including me.
 
+from typing import Any
 
-def load_data(file_path: str):
+
+def load_data(path: str):
     """
     Function to load the dataset.
 
     Args:
-        file_path (str): The path to the dataset file.
+        path (str): The path to the dataset file.
 
     Returns:
         The loaded dataset (modify this return as needed).
     """
-    print(f"Loading data from {file_path}")
+    print(f"Loading data from {path}")
     # TODO: Implement actual data loading logic
-    return None  # Replace with actual dataset
+    data = ...
+    return data  # Replace with actual dataset
 
 
-def clean_data(data):
+def clean_data(data: Any):
     """
     Function to clean the dataset.
 
@@ -34,7 +37,7 @@ def clean_data(data):
     return data  # Modify this as needed
 
 
-def feature_engineering(data):
+def feature_engineering(data: Any):
     """
     Function to create or modify features in the dataset.
 
@@ -49,7 +52,7 @@ def feature_engineering(data):
     return data  # Modify this as needed
 
 
-def save_data(data, path):
+def save_data(data: Any, path: str):
     """
     Function to create or modify features in the dataset.
 
@@ -65,7 +68,7 @@ def save_data(data, path):
     print("Saving data successful.")
 
 
-def preprocess(file_path: str):
+def preprocess(path: str):
     """
     General preprocessing pipeline. Includes loading, cleaning, and feature engineering.
 
@@ -74,12 +77,12 @@ def preprocess(file_path: str):
     predictions.
 
     Args:
-        file_path (str): The path to the data file.
+        path (str): The path to the data file.
 
     Returns:
         The preprocessed dataset.
     """
-    data = load_data(file_path)
+    data = load_data(path)
     data = clean_data(data)
     data = feature_engineering(data)
     path = "path/to/store/your/preprocessed/file"

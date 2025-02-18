@@ -12,6 +12,7 @@
 
 # PLEASE DELETE ME AFTER YOU ARE DONE UNDERSTANDING!!
 
+import keras
 import mlflow.pyfunc
 
 
@@ -23,24 +24,25 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
     - Inference
     - Postprocessing
     """
-    def __init__(self, trained_model):
+    def __init__(self, trained_model: keras.Sequential):
         self.model = trained_model
 
-    def preprocess(self, input_data):
+    def preprocess(self, input_data: numpy.ndarray):
         from {{ cookiecutter.package_name }} import preprocess_single_sample
 
         print("Preprocessing input data...")
         processed = preprocess_single_sample(input_data)
         return processed
 
-    def postprocess(self, predictions):
+    def postprocess(self, predictions: numpy.ndarray):
         from {{ cookiecutter.package_name }} import postprocess
 
         print("Postprocessing predictions...")
         postprocessed = postprocess(predictions)
         return postprocessed
 
-    def predict(self, context, model_input):
+    def predict(self, context: mlflow.pyfunc.PythonModelContext, model_input:
+    numpy.ndarray):
         """
         Runs full pipeline: Preprocess -> Model Inference -> Postprocess.
         """

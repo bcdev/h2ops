@@ -3,8 +3,10 @@
 # You can run me as is to see how everything works.
 # Once you are comfortable, please delete all these comments including me.
 
+from typing import Any
 
-def postprocess(data):
+
+def postprocess(data: Any):
     """
     Add your postprocess stuff here.
 

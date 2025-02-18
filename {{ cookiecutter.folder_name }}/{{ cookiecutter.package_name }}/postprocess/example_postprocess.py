@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def postprocess(predictions):
+def postprocess(predictions: np.ndarray):
     """
     Postprocess model predictions - works for both single and batch predictions
 

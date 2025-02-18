@@ -5,7 +5,7 @@
 # in-conjunction with your code to track your experiments.
 # Once you are comfortable, please delete all these comments including me.
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import mlflow
 
@@ -35,7 +35,13 @@ def load_data(path_to_data: str):
 
 
 class Trainer:
-    def __init__(self, model, train_data, test_data, hyperparams, trained_model_path):
+    def __init__(self,
+                 model: Any,
+                 train_data: Any,
+                 test_data: Any,
+                 hyperparams: Any,
+                 trained_model_path: Any
+                 ):
         self.model = model
         self.train_data = train_data
         self.test_data = test_data
