@@ -3,13 +3,18 @@ from airflow import DAG  # noqa
 import dagfactory
 
 #################################################
-# Note: Please update the file name of the config file after you have renamed
-# the file.
+# Note: Please update the file name of the config file below (FILENAME) after
+# you have renamed the config file.
 # Then, please delete this comment block.
 #################################################
+{% if cookiecutter.show_airflow_dag_examples == "yes" %}
+FILENAME = "example_config.yml"
+{% else %}
+FILENAME = "change_me_config.yml"
+{% endif %}
 
 BASE_DIR = Path(__file__).resolve().parent
-config_file = BASE_DIR / "change_me_config.yml"
+config_file = BASE_DIR / FILENAME
 print(f"Loading config file from: {config_file}")
 
 if not config_file.exists():
