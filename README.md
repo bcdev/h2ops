@@ -226,8 +226,13 @@ If it is empty, all good, if not, it might be something like this:
 ```
 Completely move this file away from this location or delete it and try running docker again.
 
-If you face any other problems not mentioned above, please reach out to us.
+4. If you face some permissions issues on some files like `Permission Denied`, 
+as a workaround, please use this and let us know so that we can update this repo.
+```bash
+  sudo chmod 666 <your-filename> 
+```
 
+If you face any other problems not mentioned above, please reach out to us.
 
 ## Acknowledgments
 

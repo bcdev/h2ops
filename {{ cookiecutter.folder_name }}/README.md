@@ -251,6 +251,27 @@ Prerequisites
 - run `local_inference.py` after changing your input data.
 
 
+## Accessing/Viewing these services in Pycharm
+
+If you are a Pycharm user, you are amazing!
+Now, let's use one of its features called Services. It is a small hexagonal button
+with the play icon inside it. You will find it in one of the tool windows.
+
+When you open it, you can add services like Docker and Kubernetes. But for this 
+framework, we only need Docker.
+
+To view the docker service here, first we need to install the Docker Plugin in Pycharm.
+
+To do so, `PyCharm settings` -> `Plugins` -> Install Docker plugin from marketplace
+
+Then, reopen the services window, and when you add a new service, you will find Docker.
+Just use the default settings.
+
+Now whenever you are running docker compose, you can view those services in this tab 
+as shown below
+
+![Services](../assets/services.png)
+
 ## ❌ DO NOT MODIFY THESE FILES ❌
 
 To maintain stability and consistency, please do not update or modify the following files:
