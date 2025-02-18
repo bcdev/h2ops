@@ -170,8 +170,26 @@ and output would be something like:
 ```
 This means now you have successfully installed Docker. 
 
-Now you can move to [this section](#project-generation) to proceed.
-### Troubleshooting
+## Installation
+
+1. Create a separate environment for cookiecutter
+```bash
+  mamba create -n cc cookiecutter
+  mamba activate cc
+```
+
+2. Generate the project from template:
+```bash
+  cookiecutter https://github.com/bcdev/h2ops
+```
+
+When prompted for input, enter the details requested. If you dont provide any 
+input for a given choice, the first choice from the list is taken as the default.
+
+Once the project is created, please read the README.md from that.
+
+
+## Troubleshooting
 
 
 1. If you face issue like `Docker Daemon not started`, start it using:
@@ -232,6 +250,9 @@ as a workaround, please use this and let us know so that we can update this repo
 ```
 
 If you face any other problems not mentioned above, please reach out to us.
+
+
+
 
 ## Acknowledgments
 
