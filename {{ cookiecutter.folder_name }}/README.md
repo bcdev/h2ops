@@ -3,9 +3,48 @@
 ## You made it!
 Congratulations for making it here! You are on the right track :)
 
-Please read this completely before starting your journey.
+Please read or skim this completely before starting your journey.
 
 If you face any issues or have any feedback, please share it with us.
+
+## Project Structure
+
+Any files or folders marked with `*` are off-limits—no need to change, modify, 
+or even worry about them. Just focus on the ones without the mark!
+```
+├── .github/             # GitHub Actions workflows (you are provided with a starter CI)
+├── dags/                # Airflow DAG definitions 
+│                          (you can either define dags using a config-file (dag-factory)
+│                           or use Python scripts.)
+├── notebooks/           # JupyterLab notebooks
+├── {{ cookiecutter.package_name}}/                  
+│   │                     (For new projects, it would be good to follow this standardized folder structure.
+│   │                      You are of course allowed to add anything you like to it.)
+│   ├── dataloader/      # Your Data loading scripts
+│   ├── train/           # Your Model training scripts
+│   ├── preprocess/      # Your Feature engineering/preprocessing scripts
+│   ├── postprocess/     # Your Postprocessing model output scripts
+│   ├── model/           # Your Model defintion
+│   ├── model_pipeline/  # Your Model Pipeline to be used for inference
+│   └── utils/           # Utility functions
+├── tests/               # Unit and integration tests
+├── data/                # If you have data locally, move it here and use it so that airflow has access to it.
+├── README.md            # The one you are reading :p. Feel free to update it based on your project.
+├── environment.yml      # Libraries required for local mlops and your project
+├── mlflow-artifacts/ *  # MLflow artifacts (created if you don't choose minio)
+├── mlops_run.sh *       # Shell script to start MLOps services locally 
+├── docker-compose.yml * # Docker compose that spins up all services locally for MLOps
+└── dockerfiles/ *       # Dockerfiles and compose files
+```
+
+In your `{{ cookiecutter.package_name}}` package, you are provided with scripts
+starting with `change_me_*`. Please have a look at the comments in these files
+before starting.
+
+If you chose to have examples for dags and ML package, you will find the files 
+starting with `example_*`. Please have a look at these files to get more info 
+and to get started.
+
 
 ## Getting Started with MLOps
 
@@ -70,7 +109,7 @@ runs, but the user should not worry about it or change them if not needed.
 ```commandline
 -c -> to build docker images without cache
 -j -> to change the port of jupyter lab instance running; defaults to 8895
--v -> to delete attached volumes when shutting down
+-v -> to delete attached volumes when shutting down (beware! you will loose all your experiments and s3 minio data locally if you use this flag.)
 -b -> to build the docker images before starting the containers
 ```
 
