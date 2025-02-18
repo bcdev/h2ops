@@ -1,6 +1,6 @@
 # H2Ops: MLOps Project Template
 
-[![Unittest H2Ops](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml/badge.svg)](https://github.com/bcdev/terraflow/actions/workflows/unittest.yml)
+[![Unittest H2Ops](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml/badge.svg)](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml)
 
 ![H2Ops](assets/h2ops.png)
 
