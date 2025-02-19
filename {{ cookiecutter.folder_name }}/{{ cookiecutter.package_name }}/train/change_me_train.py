@@ -5,11 +5,13 @@
 # in-conjunction with your code to track your experiments.
 # Once you are comfortable, please delete all these comments including me.
 
+import os
 from typing import TYPE_CHECKING, Any
 
 import mlflow
 
 from {{ cookiecutter.package_name }}.model_pipeline.change_me_model_pipeline import ModelPipelineModel
+from {{ cookiecutter.package_name }}.dataloader.change_me_data import load_preprocessed_data
 
 # This is to make sure that Airflow or its dependencies are not added to the
 # environment of the Mlflow model as it is not required and might also bring
@@ -17,22 +19,6 @@ from {{ cookiecutter.package_name }}.model_pipeline.change_me_model_pipeline imp
 # syntax to use the TaskInstance for accessing xcom values.
 if TYPE_CHECKING:
     from airflow.models import TaskInstance
-
-def load_data(path_to_data: str):
-    """
-    Function to load the preprocessed dataset.
-
-    Args:
-        path_to_data (str): The path to the preprocessed data file.
-
-    Returns:
-        The loaded preprocessed data.
-    """
-    print(f"Loading preprocessed data from {path_to_data}")
-    # TODO: Implement actual data loading logic
-    data = ...
-    return data
-
 
 class Trainer:
     def __init__(self,
@@ -61,6 +47,7 @@ class Trainer:
         # TODO: Implement model evaluation logic
         print("Saving model...")
         # TODO: Save model # save model to self.trained_model_path
+        artifact_path = "..."
         # example custom model saving
         # Here we log our custom model that we created.
         # It is important that we pass the code_paths argument which
@@ -73,7 +60,13 @@ class Trainer:
         # the files, empty files have 0 bytes of content and that
         # creates issues with the urllib3 upload to S3 (this
         # happens inside MLFlow)
-        artifact_path = "..."
+
+        # This checks whether you are running this code from an Airflow worker or
+        # your local system to make sure we have the right path
+        if not os.getenv("AIRFLOW_HOME"):
+            code_paths = ["../../{{ cookiecutter.package_name }}"]
+        else:
+            code_paths = ["{{ cookiecutter.package_name }}"]
         mlflow.pyfunc.log_model(
             python_model=ModelPipelineModel(self.model),
             artifact_path=artifact_path,
@@ -82,7 +75,7 @@ class Trainer:
             # that for e.g. might need a preprocessing script.
             # See here for more details:
             # https://mlflow.org/docs/latest/model/dependencies.html#id12
-            code_paths=["{{ cookiecutter.package_name }}"],
+            code_paths=code_paths,
             # sometimes when you deploy and run your model
             # inference, you might get errors like Module Not
             # found, for those cases, you can specify the
@@ -95,7 +88,7 @@ class Trainer:
             # remove it.
             # See here for more details:
             # https://mlflow.org/docs/latest/python_api/mlflow.pyfunc.html#mlflow.pyfunc.log_model
-            extra_pip_requirements=["boto3==1.36.21"]
+            extra_pip_requirements=["boto3==1.36.23"]
         )
         print("Model training and evaluation complete!")
 
@@ -113,7 +106,7 @@ def train(ti: "TaskInstance"=None):
 
     # Modify this path to point to the preprocessed data file
     file_path = "path/to/your/processed_data.file"
-    train_data, test_data = load_data(file_path)
+    train_data, test_data = load_preprocessed_data(file_path)
     from {{cookiecutter.package_name}}.models.change_me_model import get_model
     model = get_model()
     hyperparams = {}
@@ -123,6 +116,9 @@ def train(ti: "TaskInstance"=None):
     trainer.train()
 
 if __name__ == "__main__":
+    # If you want to run this locally, please run these commands first:
+    # export MLFLOW_TRACKING_URI=http://localhost:5000
+    # export MLFLOW_S3_ENDPOINT_URL="http://localhost:9000"
     train()
 
 

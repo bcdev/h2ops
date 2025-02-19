@@ -3,16 +3,14 @@
 import os
 from typing import TYPE_CHECKING
 
+import fsspec
 import numpy as np
 from datetime import datetime
 
-from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 
+from {{ cookiecutter.package_name }}.dataloader.example_data_without_minio import load_raw_data
 
-from {{ cookiecutter.package_name }}.utils.utils import get_s3_client
-from {{ cookiecutter.package_name }}.dataloader.example_data import (
-    load_raw_data)
 
 load_dotenv()
 
@@ -20,14 +18,7 @@ if TYPE_CHECKING:
     from airflow.models import TaskInstance
 
 
-s3 = get_s3_client(
-    endpoint_url=os.getenv("MLFLOW_S3_ENDPOINT_URL"),
-    access_key=os.getenv("AWS_ACCESS_KEY_ID"),
-    secret_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-)
-
-
-def feature_engineering(X: np.ndarray, is_single_input:bool=False):
+def feature_engineering(X: np.ndarray, is_single_input: bool = False):
     """
     Preprocess input data - works for both single samples and batches
 
@@ -53,31 +44,23 @@ def feature_engineering(X: np.ndarray, is_single_input:bool=False):
 
 
 def save_data(
-        X_train: np.ndarray,
-        y_train: np.ndarray,
-        X_test: np.ndarray,
-        y_test: np.ndarray,
-        path: str,
-        timestamp: str
+    X_train: np.ndarray,
+    y_train: np.ndarray,
+    X_test: np.ndarray,
+    y_test: np.ndarray,
+    path: str,
 ):
+    fs = fsspec.filesystem("file")
+    fs.makedirs(path, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    save_path = f"{path}/mnist_processed_{timestamp}.npz"
     np.savez_compressed(
-        path, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test
+        save_path, X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test
     )
 
-    bucket_name = "mnist-data"
-    object_path = f"preprocessing/{timestamp}/mnist_processed.npz"
-
-    try:
-        s3.head_bucket(Bucket=bucket_name)
-    except (NameError, ClientError):
-        print(f"Bucket: {bucket_name} does not exist, creating one now!")
-        s3.create_bucket(Bucket=bucket_name)
-
-    s3.upload_file(path, bucket_name, object_path)
-
-    os.remove(path)
-    print(f"Preprocessed data stored to MinIO: {object_path}")
-    return object_path, bucket_name
+    print(f"Preprocessed data stored to MinIO: {save_path}")
+    return save_path
 
 
 def preprocess(ti: "TaskInstance" = None):
@@ -88,14 +71,15 @@ def preprocess(ti: "TaskInstance" = None):
     X_train_processed = feature_engineering(X_train, is_single_input=False)
     X_test_processed = feature_engineering(X_test, is_single_input=False)
 
-    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    path = f"/tmp/mnist_processed_{timestamp}.npz"
+    # This checks whether you are running this code from an Airflow worker or
+    # your local system to make sure we have the right path
+    if not os.getenv("AIRFLOW_HOME"):
+        path = "../../data/preprocessing/"
+    else:
+        path = "data/preprocessing/"
 
-    stored_path, bucket_name = save_data(X_train_processed, y_train, X_test_processed,
-                           y_test, path,
-              timestamp)
+    stored_path = save_data(X_train_processed, y_train, X_test_processed, y_test, path)
     ti.xcom_push(key="preprocessed_path", value=stored_path)
-    ti.xcom_push(key="bucket_name", value=bucket_name)
     print("Preprocessing complete!")
 
 

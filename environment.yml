@@ -1,4 +1,4 @@
-name: terraflow
+name: h2ops
 channels:
   - conda-forge
 dependencies:

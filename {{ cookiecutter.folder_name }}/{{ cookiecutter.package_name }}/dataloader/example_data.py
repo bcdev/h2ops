@@ -1,12 +1,18 @@
 import os
 
 import numpy as np
+from tensorflow.keras.datasets import mnist
 
 from {{ cookiecutter.package_name }}.utils.utils import (
     get_s3_client,
 )
 
-def load_data(preprocessed_path: str, bucket_name: str):
+
+def load_raw_data():
+    return mnist.load_data()
+
+
+def load_preprocessed_data(preprocessed_path: str, bucket_name: str):
     s3 = get_s3_client(
         endpoint_url=os.getenv("MLFLOW_S3_ENDPOINT_URL"),
         access_key=os.getenv("AWS_ACCESS_KEY_ID"),

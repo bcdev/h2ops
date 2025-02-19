@@ -5,21 +5,8 @@
 
 from typing import Any
 
-
-def load_data(path: str):
-    """
-    Function to load the dataset.
-
-    Args:
-        path (str): The path to the dataset file.
-
-    Returns:
-        The loaded dataset (modify this return as needed).
-    """
-    print(f"Loading data from {path}")
-    # TODO: Implement actual data loading logic
-    data = ...
-    return data  # Replace with actual dataset
+from {{ cookiecutter.package_name }}.dataloader.change_me_data import (
+    load_raw_data)
 
 
 def clean_data(data: Any):
@@ -82,7 +69,7 @@ def preprocess(path: str):
     Returns:
         The preprocessed dataset.
     """
-    data = load_data(path)
+    data = load_raw_data(path)
     data = clean_data(data)
     data = feature_engineering(data)
     path = "path/to/store/your/preprocessed/file"

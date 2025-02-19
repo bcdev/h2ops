@@ -4,7 +4,13 @@
 # Once you are comfortable, please delete all these comments including me.
 
 
-def load_data():
+def load_raw_data(path: str):
     """
-    Define your data loading logic here
+    Function to load the raw dataset.
+    """
+
+
+def load_preprocessed_data(path: str):
+    """
+    Function to load the preprocessed dataset.
     """

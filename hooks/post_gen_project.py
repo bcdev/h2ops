@@ -67,6 +67,9 @@ def main():
     show_ml_package_examples = (
         "{{ cookiecutter.show_ml_package_examples }}".strip().lower()
     )
+    use_minio = "{{ cookiecutter.use_minio }}".strip().lower()
+
+    print("minio", use_minio)
 
     if use_dag_factory != "yes":
         to_be_deleted_deps.append("pip")
@@ -75,26 +78,74 @@ def main():
     env_file = pathlib.Path().cwd() / "environment.yml"
     modify_environment_yaml(env_file, to_be_deleted_deps)
 
-    if show_airflow_examples != "yes":
-        if use_dag_factory != "yes":
-            remove_file(os.path.join(os.getcwd(), "dags/example_config.yml"))
-        else:
-            remove_file(os.path.join(os.getcwd(), "dags/example_dag.py"))
+    if use_minio == "yes":
+        remove_file(
+            os.path.join(
+                os.getcwd(),
+                "{{ cookiecutter.package_name }}",
+                "dataloader/example_data_without_minio.py",
+            )
+        )
+        remove_file(
+            os.path.join(
+                os.getcwd(),
+                "{{ cookiecutter.package_name }}",
+                "preprocess/example_preprocess_without_minio.py",
+            )
+        )
+        remove_file(
+            os.path.join(
+                os.getcwd(),
+                "{{ cookiecutter.package_name }}",
+                "train/example_train_without_minio.py",
+            )
+        )
+    else:
+        remove_file(
+            os.path.join(
+                os.getcwd(),
+                "{{ cookiecutter.package_name }}",
+                "dataloader/example_data.py",
+            )
+        )
+        remove_file(
+            os.path.join(
+                os.getcwd(),
+                "{{ cookiecutter.package_name }}",
+                "preprocess/example_preprocess.py",
+            )
+        )
+        remove_file(
+            os.path.join(
+                os.getcwd(),
+                "{{ cookiecutter.package_name }}",
+                "train/example_train.py",
+            )
+        )
 
-    if use_dag_factory != "yes":
+    if show_airflow_examples != "yes":
+        remove_file(os.path.join(os.getcwd(), "dags/example_config.yml"))
+        remove_file(os.path.join(os.getcwd(), "dags/example_dag.py"))
+
+    if use_dag_factory == "yes":
+        remove_file(os.path.join(os.getcwd(), "dags/change_me_dag.py"))
+        remove_file(os.path.join(os.getcwd(), "dags/example_dag.py"))
+    else:
         remove_file(os.path.join(os.getcwd(), "dags/change_me_config.yml"))
         remove_file(os.path.join(os.getcwd(), "dags/change_me_generate_dags.py"))
-    else:
-        remove_file(os.path.join(os.getcwd(), "dags/change_me_dag.py"))
+        remove_file(os.path.join(os.getcwd(), "dags/example_config.yml"))
 
     if show_ml_package_examples != "yes":
         file_paths_config = [
             "dataloader/example_data.py",
+            "dataloader/example_data_without_minio.py",
             "model_pipeline/example_model_pipeline.py",
             "models/example_model.py",
             "postprocess/example_postprocess.py",
             "preprocess/example_preprocess.py",
+            "preprocess/example_preprocess_without_minio.py",
             "train/example_train.py",
+            "train/example_train_without_minio.py",
         ]
 
         for file_path_relative in file_paths_config:

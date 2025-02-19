@@ -162,7 +162,7 @@ cython_debug/
 #.idea/
 
 logs/
-mlflow_artifacts/
+mlartifacts/
 mlruns/
 
 .example*

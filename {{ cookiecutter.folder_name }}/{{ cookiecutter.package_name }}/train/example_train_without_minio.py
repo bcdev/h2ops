@@ -17,7 +17,7 @@ from {{ cookiecutter.package_name }}.utils.utils import (
     get_or_create_experiment
 )
 from {{ cookiecutter.package_name }}.models.example_model import get_model
-from {{ cookiecutter.package_name }}.dataloader.example_data import load_preprocessed_data
+from {{ cookiecutter.package_name }}.dataloader.example_data_without_minio import load_preprocessed_data
 
 if TYPE_CHECKING:
     from airflow.models import TaskInstance
@@ -32,14 +32,12 @@ class MnistTrainer:
                  test_data: np.ndarray,
                  hyperparams: dict[str, list],
                  trained_model_path: str,
-                 s3_data_path: str
                  ):
         self.model = model
         self.train_data = train_data
         self.test_data = test_data
         self.hyperparams = hyperparams
         self.trained_model_path = trained_model_path
-        self.s3_data_path = s3_data_path
 
 
     def train(self):
@@ -155,10 +153,9 @@ def train(ti: "TaskInstance"=None):
     # the stored data
     preprocessed_path = ti.xcom_pull(task_ids="ml.preprocess_task",
                                      key="preprocessed_path")
-    bucket_name = ti.xcom_pull(task_ids="ml.preprocess_task",
-                               key="bucket_name")
-    train_data, test_data, s3_data_path = load_preprocessed_data(preprocessed_path,
-                                                    bucket_name)
+
+    train_data, test_data = load_preprocessed_data(preprocessed_path)
+
     model = get_model()
     hyperparams = {"epochs": [1, 2]}
     trained_model_path = "mnist_model_final"
@@ -166,8 +163,7 @@ def train(ti: "TaskInstance"=None):
                            train_data=train_data,
                            test_data=test_data,
                            hyperparams=hyperparams,
-                           trained_model_path=trained_model_path,
-                           s3_data_path=s3_data_path)
+                           trained_model_path=trained_model_path)
 
     trainer.train()
 

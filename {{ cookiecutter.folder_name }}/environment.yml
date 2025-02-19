@@ -12,6 +12,7 @@ dependencies:
   - jupyter
   - python-dotenv
   - git
+  - fsspec
   - pip
   - pip:
     - dag_factory

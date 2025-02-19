@@ -27,7 +27,7 @@ x-airflow-common:
     - ./data:/opt/airflow/data
     - ./{{ cookiecutter.package_name }}:/opt/airflow/{{ cookiecutter.package_name }}
     {% if cookiecutter.use_minio == "no" %}
-    - ./mlflow_artifacts:/mlflow_artifacts
+    - ./${DEFAULT_ARTIFACT_ROOT}:/${DEFAULT_ARTIFACT_ROOT}
     {% endif %}
 
   depends_on:
@@ -68,8 +68,6 @@ services:
     command: mlflow ui -p ${MLFLOW_HOST_PORT} --host 0.0.0.0 
             {% if cookiecutter.use_minio == "yes" %}
             --default-artifact-root s3://${MLFLOW_BUCKET_NAME} --artifacts-destination s3://${MLFLOW_BUCKET_NAME}
-            {% else %}
-            --default-artifact-root /mlflow_artifacts
             {% endif %}
             --backend-store-uri postgresql://mlflow:mlflow@postgres-mlflow/mlflow --serve-artifacts
     {% if cookiecutter.use_minio == "no" %}
