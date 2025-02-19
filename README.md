@@ -24,6 +24,24 @@ Currently what we support is the within the box outlined as local MLOps.
 This template has only been tested on Linux Ubuntu and it works as expected.
 As we have not tested it yet on Windows, we are not sure if it works in there.
 
+# Table of Contents
+- [Overview](#overview)
+- [Project Structure from this template.](#project-structure-from-this-template)
+- [ML Pipeline Overview](#ml-pipeline-overview)
+  * [0. Cookiecutter](#0-cookiecutter)
+  * [1. Apache Airflow](#1-apache-airflow)
+    + [Airflow UI](#airflow-ui)
+  * [2. MLflow](#2-mlflow)
+    + [MLFlow UI](#mlflow-ui)
+  * [3. JupyterLab](#3-jupyterlab)
+  * [4. MinIO](#4-minio)
+- [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+    + [Docker and Docker compose plugin Installation](#docker-and-docker-compose-plugin-installation)
+- [Installation](#installation)
+- [Troubleshooting](#troubleshooting)
+- [Acknowledgments](#acknowledgments)
+- [TODO](#todo)
 
 ## Overview
 
@@ -34,7 +52,7 @@ integrating essential MLOps tools:
 - **JupyterLab**: For interactive development and experimentation
 - **MinIO**: For local object storage for ML artifacts
 
-## Project Structure from this template.
+## Project Structure from this template
 
 You will get the following project when you use this template to get started with
 your ML project.
@@ -69,7 +87,6 @@ or even worry about them. Just focus on the ones without the mark!
 
 
 ## ML Pipeline Overview
-## Components
 
 Before you get started, let's explore the tools that we are using for this 
 standardized MLOps framework 
@@ -90,7 +107,8 @@ Purpose: Workflow orchestration
     Provides a user-friendly web interface for tracking task execution's status.
 
 #### Airflow UI
-- **DAGs (Directed Acyclic Graphs)**: A workflow representation in Airflow. You can enable, disable, and trigger DAGs from the UI.
+- **DAGs (Directed Acyclic Graphs)**: A workflow representation in Airflow. You 
+can enable, disable, and trigger DAGs from the UI.
 - **Graph View**: Visual representation of task dependencies.
 - **Tree View**: Displays DAG execution history over time.
 - T**ask Instance**: A single execution of a task in a DAG.
@@ -116,7 +134,8 @@ Purpose: Experiment tracking and model management
 
 #### MLFlow UI
 - **Experiments**: Group of runs tracking different versions of ML models.
-- **Runs**: A single execution of an ML experiment with logged parameters, metrics, and artifacts.
+- **Runs**: A single execution of an ML experiment with logged parameters, 
+metrics, and artifacts.
 - **Parameters**: Hyperparameters or inputs logged during training.
 - **Metrics**: Performance indicators like accuracy or loss.
 - **Artifacts**: Files such as models, logs, or plots.
@@ -127,7 +146,8 @@ Common Actions
 - **View experiment runs**: Go to Experiments > Select an experiment
 - **Compare runs**: Select multiple runs and click Compare.
 - **View parameters and metrics**: Click on a run to see details.
-- **View registered model**: Under Artifacts, select a model and click Register Model.
+- **View registered model**: Under Artifacts, select a model and click Register 
+Model.
 
 ### 3. JupyterLab
 
@@ -149,12 +169,14 @@ have been tried and tested.
 
 If you face any issues, please check out the [troubleshooting section](#troubleshooting)
 
-## Prerequisites
+### Prerequisites
 
 - Docker and Docker Compose
-- [Mamba](https://github.com/conda-forge/miniforge) - Please make sure you install `Python 3.12` as this repository has been tested with that version.
+- [Mamba](https://github.com/conda-forge/miniforge) - Please make sure you 
+install `Python 3.12` as this repository has been tested with that version.
 
-### Docker and Docker compose plugin Installation:
+#### Docker and Docker compose plugin Installation
+
 Please follow the steps mentioned in this [link](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
 
 This should install both Docker and Docker compose plugin.
@@ -218,7 +240,8 @@ To view the docker contexts,
 ```bash
    docker context ls
 ```
-This will show the list of docker contexts. Check if default is enabled (it should have a * beside it)
+This will show the list of docker contexts. Check if default is enabled (it 
+should have a * beside it)
 If not, you might probably have desktop as your context enabled.
 To confirm which context you are in:
 ```bash
@@ -241,17 +264,17 @@ If it is empty, all good, if not, it might be something like this:
 	"credsStore": "desktop"
   }
 ```
-Completely move this file away from this location or delete it and try running docker again.
+Completely move this file away from this location or delete it and try running 
+docker again.
 
 4. If you face some permissions issues on some files like `Permission Denied`, 
-as a workaround, please use this and let us know so that we can update this repo.
+as a workaround, please use this and let us know so that we can update this 
+repo.
 ```bash
   sudo chmod 666 <your-filename> 
 ```
 
 If you face any other problems not mentioned above, please reach out to us.
-
-
 
 
 ## Acknowledgments
@@ -263,9 +286,7 @@ If you face any other problems not mentioned above, please reach out to us.
 - [JupyterLab](https://jupyterlab.readthedocs.io/)
 
 
-## TODO:
-- refactor project structure based on feedback
-- add pyproject.toml
+## TODO
 - add license choice
 - add starter tests within the template
 - add github CI worklfow for testing
