@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{ cookiecutter.package_name }}"
+authors = [
+    {name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}"},
+]
+description = """\
+    {{ cookiecutter.project_description }
+    """
+keywords = [
+    "your",
+    "keywords",
+    "here",
+]
+version = "0.0.1"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE", content-type = "text/plain" }
+requires-python = ">=3.12"
+classifiers = [
+  # Find the list of all classifiers here: https://pypi.org/classifiers/
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 3 - Alpha",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+]
+
+[project.optional-dependencies]
+extra = [
+    "jupyterlab==4.2.5",
+    "nbstripout",
+    "seaborn",
+    "xbatcher==0.4.0",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+lint = [
+    "black",
+    "flake8",
+    "jupyterlab-black",
+]
+
+# TODO: Update these parameters
+[project.urls]
+Homepage = "Update your homepage here"
+Repository = "Update your repository here"
+
+[tool.black]
+line-length = 78
+target-version = ["py312"]
