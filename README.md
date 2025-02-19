@@ -287,7 +287,6 @@ If you face any other problems not mentioned above, please reach out to us.
 
 
 ## TODO
-- add license choice
 - add starter tests within the template
 - add github CI worklfow for testing
 - add model deployment on remote server
