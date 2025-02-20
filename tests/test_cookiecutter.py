@@ -425,7 +425,6 @@ import yaml
 import pytest
 from cookiecutter.main import cookiecutter
 
-# Centralized test configurations
 BASE_CONTEXT = {
     "project_name": "My ml project",
     "project_description": "Some description",
@@ -435,7 +434,6 @@ BASE_CONTEXT = {
     "package_name": "my_package",
 }
 
-# Expected files that should be present in all projects
 CORE_FILES = {
     "mlops-run.sh",
     "docker-compose.yml",
@@ -501,12 +499,12 @@ EXAMPLE_ML_PACKAGE_FILES = [
 ]
 
 EXAMPLE_ML_PACAKGE_WITHOUT_MINIO = [
-    "dataloader/example_data_without_minio.py",
-    "preprocess/example_preprocess_without_minio.py",
-    "train/example_train_without_minio.py",
+    "my_package/dataloader/example_data_without_minio.py",
+    "my_package/preprocess/example_preprocess_without_minio.py",
+    "my_package/train/example_train_without_minio.py",
 ]
 
-
+# Possible choices for each parameter to create combinations of them.
 PARAMETER_OPTIONS = {
     "use_minio": ["yes", "no"],
     "show_airflow_dag_examples": ["yes", "no"],
@@ -516,7 +514,6 @@ PARAMETER_OPTIONS = {
 
 
 def generate_test_cases():
-    """Generate all possible test cases from parameter options."""
     param_names = list(PARAMETER_OPTIONS.keys())
     param_values = list(PARAMETER_OPTIONS.values())
 
@@ -549,7 +546,6 @@ def temp_dir():
 
 
 def generate_project(temp_dir: str, context: Dict[str, Any]) -> pathlib.Path:
-    """Helper function to generate project using cookiecutter."""
     template_dir = str(pathlib.Path(__file__).parent.parent)
     cookiecutter(
         template=template_dir,
@@ -561,7 +557,6 @@ def generate_project(temp_dir: str, context: Dict[str, Any]) -> pathlib.Path:
 
 
 def get_all_files(directory: pathlib.Path) -> Set[str]:
-    """Get all files in directory relative to the directory root."""
     return {
         str(path.relative_to(directory))
         for path in directory.glob("**/*")
@@ -571,13 +566,11 @@ def get_all_files(directory: pathlib.Path) -> Set[str]:
 
 @pytest.mark.parametrize("test_case", TEST_CASES)
 def test_project_generation(temp_dir: str, test_case: Dict[str, Any]):
-    """Main test that verifies project generation and configuration."""
     print(test_case)
     context = test_case["context"]
     expects = test_case["expects"]
     project_dir = generate_project(temp_dir, context)
 
-    # Basic project structure checks
     assert project_dir.exists(), "Project directory not created"
 
     # Verify README content
@@ -661,7 +654,6 @@ def test_project_generation(temp_dir: str, test_case: Dict[str, Any]):
 
 @pytest.mark.parametrize("test_case", TEST_CASES)
 def test_ruff_linting(temp_dir: str, test_case: Dict[str, Any]):
-    """Verify that generated code passes ruff linting."""
     project_dir = generate_project(temp_dir, test_case["context"])
     result = subprocess.run(
         ["ruff", "check", "."],
