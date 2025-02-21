@@ -107,6 +107,17 @@ Purpose: Workflow orchestration
     Provides a user-friendly web interface for tracking task execution's status.
 
 #### Airflow UI
+
+
+
+
+https://github.com/user-attachments/assets/b7a76c27-2f38-489f-9798-d0af4ac7619b
+
+
+
+
+
+
 - **DAGs (Directed Acyclic Graphs)**: A workflow representation in Airflow. You 
 can enable, disable, and trigger DAGs from the UI.
 - **Graph View**: Visual representation of task dependencies.
@@ -133,6 +144,13 @@ Purpose: Experiment tracking and model management
     Supports multiple deployment targets, including cloud platforms, Kubernetes, and on-premises environments.
 
 #### MLFlow UI
+
+
+
+https://github.com/user-attachments/assets/5c639c34-cba2-4682-a2ed-6a854e9386c1
+
+
+
 - **Experiments**: Group of runs tracking different versions of ML models.
 - **Runs**: A single execution of an ML experiment with logged parameters, 
 metrics, and artifacts.
