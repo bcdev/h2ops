@@ -32,8 +32,7 @@ def test_feature_engineering():
 
 
 # Integration test
-@patch("{{ cookiecutter.package_name "
-       "}}.preprocess.change_me_preprocess.load_raw_data")
+@patch("{{ cookiecutter.package_name }}.preprocess.change_me_preprocess.load_raw_data")
 @patch("{{ cookiecutter.package_name }}.preprocess.change_me_preprocess.clean_data")
 @patch("{{ cookiecutter.package_name }}.preprocess.change_me_preprocess.feature_engineering")
 @patch("{{ cookiecutter.package_name }}.preprocess.change_me_preprocess.save_data")
