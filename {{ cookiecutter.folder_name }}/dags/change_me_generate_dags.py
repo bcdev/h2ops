@@ -7,7 +7,7 @@ import dagfactory
 # you have renamed the config file.
 # Then, please delete this comment block.
 #################################################
-{% if cookiecutter.show_airflow_dag_examples == "yes" %}
+{% if cookiecutter.show_examples == "yes" %}
 FILENAME = "example_config.yml"
 {% else %}
 FILENAME = "change_me_config.yml"

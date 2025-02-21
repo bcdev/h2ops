@@ -91,9 +91,8 @@ EXAMPLE_ML_PACAKGE_WITHOUT_MINIO = [
 # Possible choices for each parameter to create combinations of them.
 PARAMETER_OPTIONS = {
     "use_minio": ["yes", "no"],
-    "show_airflow_dag_examples": ["yes", "no"],
+    "show_examples": ["yes", "no"],
     "use_dag_factory": ["yes", "no"],
-    "show_ml_package_examples": ["yes", "no"],
 }
 
 
@@ -110,8 +109,7 @@ def generate_test_cases():
         expects = {
             "dag_factory": context["use_dag_factory"] == "yes",
             "minio": context["use_minio"] == "yes",
-            "dag_examples": context["show_airflow_dag_examples"] == "yes",
-            "ml_examples": context["show_ml_package_examples"] == "yes",
+            "examples": context["show_examples"] == "yes",
         }
 
         test_cases.append({"context": context, "expects": expects})
@@ -196,13 +194,11 @@ def test_project_generation(temp_dir: str, test_case: dict[str, Any]):
     core_files_copy = CORE_FILES.copy()
     print("corefile", core_files_copy)
 
-    if expects["dag_examples"]:
+    if expects["examples"]:
         if expects["dag_factory"]:
             core_files_copy.update(EXAMPLE_DAG_FACTORY_FILES)
         else:
             core_files_copy.update(EXAMPLE_MANUAL_DAGS_FILES)
-
-    if expects["ml_examples"]:
         if expects["minio"]:
             core_files_copy.update(EXAMPLE_ML_PACKAGE_FILES)
         else:
@@ -229,8 +225,8 @@ def test_project_generation(temp_dir: str, test_case: dict[str, Any]):
         for file in DAG_FACTORY_FILES:
             assert file not in actual_files, f"Unexpected DAG factory file: {file}"
 
-    # Check DAG-examples related files
-    if expects["dag_examples"]:
+    # Check examples related files
+    if expects["examples"]:
         if expects["dag_factory"]:
             for file in EXAMPLE_DAG_FACTORY_FILES:
                 assert file in actual_files, f"Missing DAG factory example file{file}"
@@ -248,8 +244,6 @@ def test_project_generation(temp_dir: str, test_case: dict[str, Any]):
                     file not in actual_files
                 ), f"Missing DAG factory example file{file}"
 
-    # Check ML-examples related files
-    if expects["ml_examples"]:
         if expects["minio"]:
             for file in EXAMPLE_ML_PACKAGE_FILES:
                 assert file in actual_files, f"Missing ML pacakge example file{file}"

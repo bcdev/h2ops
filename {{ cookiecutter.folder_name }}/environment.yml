@@ -16,10 +16,12 @@ dependencies:
   - pip
   - pip:
     - dag_factory
+  {% if cookiecutter.show_examples == "yes" %}
   # This is only needed for an exmaple. If you dont need this, please feel free to remove it.
   - keras
   - tensorflow
   - numpy =2.0.2
+  {% endif %}
   # Testing
   - pytest-cov
   - pytest

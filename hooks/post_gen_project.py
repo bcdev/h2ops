@@ -61,12 +61,8 @@ def modify_environment_yaml(env_file: pathlib.Path, to_be_deleted_deps: list[str
 def main():
     to_be_deleted_deps = []
     use_dag_factory = "{{ cookiecutter.use_dag_factory }}".strip().lower()
-    show_airflow_examples = (
-        "{{ cookiecutter.show_airflow_dag_examples }}".strip().lower()
-    )
-    show_ml_package_examples = (
-        "{{ cookiecutter.show_ml_package_examples }}".strip().lower()
-    )
+    show_examples = "{{ cookiecutter.show_examples }}".strip().lower()
+
     use_minio = "{{ cookiecutter.use_minio }}".strip().lower()
 
     if use_dag_factory != "yes":
@@ -121,7 +117,7 @@ def main():
             )
         )
 
-    if show_airflow_examples != "yes":
+    if show_examples != "yes":
         remove_file(os.path.join(os.getcwd(), "dags/example_config.yml"))
         remove_file(os.path.join(os.getcwd(), "dags/example_dag.py"))
 
@@ -133,7 +129,7 @@ def main():
         remove_file(os.path.join(os.getcwd(), "dags/change_me_generate_dags.py"))
         remove_file(os.path.join(os.getcwd(), "dags/example_config.yml"))
 
-    if show_ml_package_examples != "yes":
+    if show_examples != "yes":
         file_paths_config = [
             "dataloader/example_data.py",
             "dataloader/example_data_without_minio.py",
