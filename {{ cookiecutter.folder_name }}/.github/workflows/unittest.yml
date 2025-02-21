@@ -1,0 +1,39 @@
+name: Unittest {{ cookiecutter.package_name }}
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MicroMamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: environment.yml
+
+      - name: Lint with ruff
+        run: |
+          ruff check
+
+      - name: run tests
+        shell: bash -l {0}
+        run: |
+          pytest --cov={{ cookiecutter.package_name }} --cov-branch --cov-report=xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          verbose: true
+          {% raw %}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          {% endraw %}

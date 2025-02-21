@@ -1,4 +1,4 @@
-name: Unittest H2Ops
+name: Unittest Gaiaflow
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
   unittest:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout terraflow
+      - name: checkout Gaiaflow
         uses: actions/checkout@v4
 
       - name: Set up MicroMamba
@@ -20,4 +20,4 @@ jobs:
       - name: run tests
         shell: bash -l {0}
         run: |
-          pytest --cov=terraflow --cov-report=xml
+          pytest
