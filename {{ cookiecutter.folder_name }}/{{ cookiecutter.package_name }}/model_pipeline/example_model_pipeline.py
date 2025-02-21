@@ -36,10 +36,10 @@ class ModelPipelineModel(mlflow.pyfunc.PythonModel):
         return processed
 
     def postprocess(self, predictions: np.ndarray):
-        from {{ cookiecutter.package_name }} import postprocess
+        from {{ cookiecutter.package_name }} import example_postprocess
 
         print("Postprocessing predictions...")
-        postprocessed = postprocess(predictions)
+        postprocessed = example_postprocess(predictions)
         return postprocessed
 
     def predict(self, context: mlflow.pyfunc.PythonModelContext, model_input:
