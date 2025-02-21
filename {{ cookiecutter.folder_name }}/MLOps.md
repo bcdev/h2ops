@@ -303,11 +303,14 @@ then update your python-build definitions by:
 
 ## (Optional) Creating your python package distribution
 
-First let's install the [PyPa build](https://build.pypa.io/en/latest/) if you 
+First update the `pyproject.toml` as required for your package.
+
+Then install the [PyPi build](https://build.pypa.io/en/latest/) if you 
 dont have already have it.
 ```bash
   pip install build
 ```
+
 Then from the root of this project, run:
 ```bash
   python -m build

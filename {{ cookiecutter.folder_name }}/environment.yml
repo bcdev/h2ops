@@ -23,4 +23,6 @@ dependencies:
   # Testing
   - pytest-cov
   - pytest
+  # Linting
+  - ruff
   # add your libraries here

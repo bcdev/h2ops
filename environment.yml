@@ -1,4 +1,4 @@
-name: h2ops
+name: gaiaflow
 channels:
   - conda-forge
 dependencies:
