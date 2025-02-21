@@ -89,7 +89,7 @@ class Trainer:
             # remove it.
             # See here for more details:
             # https://mlflow.org/docs/latest/python_api/mlflow.pyfunc.html#mlflow.pyfunc.log_model
-            extra_pip_requirements=["boto3==1.36.23"]
+            extra_pip_requirements=["boto3"]
         )
         print("Model training and evaluation complete!")
 

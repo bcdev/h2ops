@@ -19,11 +19,11 @@ add_your_dag_name_here_df_dag:
       bash_command: "${AIRFLOW_HOME}/scripts/example_script"
     preprocess_task:
       operator: airflow.operators.python.PythonOperator
-      python_callable: {{ cookiecutter.package_name }}.preprocess
+      python_callable: {{ cookiecutter.package_name }}.example_preprocess
       task_group_name: ml
       dependencies: [ bash_demo ]
     train_task:
       operator: airflow.operators.python.PythonOperator
-      python_callable: {{ cookiecutter.package_name }}.train
+      python_callable: {{ cookiecutter.package_name }}.example_train
       task_group_name: ml
       dependencies: [ preprocess_task ]

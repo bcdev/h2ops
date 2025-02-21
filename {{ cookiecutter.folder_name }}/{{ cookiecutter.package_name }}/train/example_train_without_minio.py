@@ -121,7 +121,7 @@ class MnistTrainer:
                         # needed
                         # See here for more details:
                         # https://mlflow.org/docs/latest/python_api/mlflow.pyfunc.html#mlflow.pyfunc.log_model
-                        extra_pip_requirements=["boto3==1.36.23"]
+                        extra_pip_requirements=["boto3"]
                     )
 
                     model_uri = mlflow.get_artifact_uri(artifact_path)

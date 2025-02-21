@@ -4,7 +4,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 
-from {{ cookiecutter.package_name }} import preprocess, train
+from {{ cookiecutter.package_name }} import example_preprocess, example_train
 
 default_args = {
     "owner": "add_your_name_here",
@@ -30,12 +30,12 @@ with DAG(
 
         preprocess_task = PythonOperator(
             task_id="preprocess_task",
-            python_callable=preprocess,
+            python_callable=example_preprocess,
         )
 
         train_task = PythonOperator(
             task_id="train_task",
-            python_callable=train
+            python_callable=example_train
         )
 
         preprocess_task >> train_task
