@@ -34,23 +34,19 @@ classifiers = [
   # Specify the Python versions you support here.
   "Programming Language :: Python :: 3.12",
 ]
+# TODO: Update these dependencies
 dependencies = [
 ]
 
+# TODO: Update these dependencies
 [project.optional-dependencies]
-extra = [
-    "jupyterlab==4.2.5",
-    "nbstripout",
-    "seaborn",
-    "xbatcher==0.4.0",
-]
+extra = []
 test = [
     "pytest",
     "pytest-cov",
 ]
 lint = [
-    "black",
-    "flake8",
+    "ruff",
     "jupyterlab-black",
 ]
 
