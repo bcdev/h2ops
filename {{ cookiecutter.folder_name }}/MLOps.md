@@ -280,7 +280,18 @@ required stuff
 example on how to get the predictions.
 
 
-#### Troubleshooting:
+## Testing
+
+The template package comes with an initial template suite of tests. 
+Please update these tests after you update the code in your package.
+
+You can run the test by running
+
+```bash
+  pytest
+```
+
+#### Troubleshooting
 If you face an issue with pyenv as such:
 ```
   python-build: defintion not found: 3.12.9

@@ -43,6 +43,7 @@ class Trainer:
         print("Training model...")
         # TODO: Implement model training logic with mlflow logging (use
         #  autologging)
+        self.model.fit(self.train_data)
         print("Evaluating model...")
         # TODO: Implement model evaluation logic
         print("Saving model...")

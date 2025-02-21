@@ -80,7 +80,7 @@ def save_data(
     return object_path, bucket_name
 
 
-def preprocess(ti: "TaskInstance" = None):
+def example_preprocess(ti: "TaskInstance" = None):
     # For training data
     (X_train, y_train), (X_test, y_test) = load_raw_data()
 
@@ -126,4 +126,4 @@ def preprocess_batch_samples(samples: np.ndarray):
 
 
 if __name__ == "__main__":
-    preprocess()
+    example_preprocess()

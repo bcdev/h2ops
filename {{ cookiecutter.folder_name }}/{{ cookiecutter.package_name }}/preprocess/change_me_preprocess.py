@@ -5,8 +5,7 @@
 
 from typing import Any
 
-from {{ cookiecutter.package_name }}.dataloader.change_me_data import (
-    load_raw_data)
+from {{ cookiecutter.package_name }}.dataloader.change_me_data import load_raw_data
 
 
 def clean_data(data: Any):

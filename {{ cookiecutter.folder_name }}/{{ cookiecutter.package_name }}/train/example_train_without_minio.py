@@ -13,9 +13,7 @@ import keras
 
 from {{ cookiecutter.package_name }}.model_pipeline.example_model_pipeline import (
     ModelPipelineModel)
-from {{ cookiecutter.package_name }}.utils.utils import (
-    get_or_create_experiment
-)
+from {{ cookiecutter.package_name }}.utils.utils import get_or_create_experiment
 from {{ cookiecutter.package_name }}.models.example_model import get_model
 from {{ cookiecutter.package_name }}.dataloader.example_data_without_minio import load_preprocessed_data
 

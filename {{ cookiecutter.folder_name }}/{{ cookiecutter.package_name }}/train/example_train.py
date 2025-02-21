@@ -137,7 +137,7 @@ class MnistTrainer:
         print("Training complete. Model logged in MLflow.")
 
 
-def train(ti: "TaskInstance"=None):
+def example_train(ti: "TaskInstance"=None):
     """
     The argument `ti` provides a feature called `XCom` that means
     Cross-Communications which facilitates sharing small amounts of data from
@@ -175,4 +175,4 @@ if __name__ == "__main__":
     # If you want to run this locally, please run these commands first:
     # export MLFLOW_TRACKING_URI=http://localhost:5000
     # export MLFLOW_S3_ENDPOINT_URL="http://localhost:9000"
-    train()
+    example_train()

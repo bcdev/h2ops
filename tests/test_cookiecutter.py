@@ -3,7 +3,7 @@ import shutil
 import subprocess
 import tempfile
 from itertools import product
-from typing import Dict, Any, Set
+from typing import Any
 
 import yaml
 import pytest
@@ -129,7 +129,7 @@ def temp_dir():
     shutil.rmtree(d)
 
 
-def generate_project(temp_dir: str, context: Dict[str, Any]) -> pathlib.Path:
+def generate_project(temp_dir: str, context: dict[str, Any]) -> pathlib.Path:
     template_dir = str(pathlib.Path(__file__).parent.parent)
     cookiecutter(
         template=template_dir,
@@ -140,7 +140,7 @@ def generate_project(temp_dir: str, context: Dict[str, Any]) -> pathlib.Path:
     return pathlib.Path(temp_dir) / context["folder_name"]
 
 
-def get_all_files(directory: pathlib.Path) -> Set[str]:
+def get_all_files(directory: pathlib.Path) -> set[str]:
     return {
         str(path.relative_to(directory))
         for path in directory.glob("**/*")
@@ -149,7 +149,7 @@ def get_all_files(directory: pathlib.Path) -> Set[str]:
 
 
 @pytest.mark.parametrize("test_case", TEST_CASES)
-def test_project_generation(temp_dir: str, test_case: Dict[str, Any]):
+def test_project_generation(temp_dir: str, test_case: dict[str, Any]):
     context = test_case["context"]
     expects = test_case["expects"]
     project_dir = generate_project(temp_dir, context)
@@ -261,7 +261,7 @@ def test_project_generation(temp_dir: str, test_case: Dict[str, Any]):
 
 
 @pytest.mark.parametrize("test_case", TEST_CASES)
-def test_ruff_linting(temp_dir: str, test_case: Dict[str, Any]):
+def test_ruff_linting(temp_dir: str, test_case: dict[str, Any]):
     project_dir = generate_project(temp_dir, test_case["context"])
     result = subprocess.run(
         ["ruff", "check", "."],

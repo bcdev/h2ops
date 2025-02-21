@@ -69,8 +69,6 @@ def main():
     )
     use_minio = "{{ cookiecutter.use_minio }}".strip().lower()
 
-    print("minio", use_minio)
-
     if use_dag_factory != "yes":
         to_be_deleted_deps.append("pip")
         to_be_deleted_deps.append({"pip": ["dag_factory"]})
