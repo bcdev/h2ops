@@ -1,16 +1,21 @@
-# H2Ops: MLOps Project Template
+# GaiaFlow: MLOps Project Template
 
-[![Unittest H2Ops](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml/badge.svg)](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml)
+[![Unittest Gaiaflow](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml/badge.svg)](https://github.com/bcdev/h2ops/actions/workflows/unittest.yml)
 
-![H2Ops](assets/h2ops.png)
+![Gaiaflow](assets/gaiaflow.png)
 
-H2Ops blends "H₂O" (water) with "Ops" (denoting MLOps), embodying an MLOps framework designed for 
-the streamlined operation of water-focused Earth Observation projects. It would
-manage the complete pipeline for remote sensing applications centered on water
-services using these powerful tools.
+<sub>(Image created using ChatGPT)</sub>
+
+GaiaFlow combines `Gaia` (the Greek goddess of Earth, symbolizing our planet) 
+with `Flow` (representing seamless workflows in MLOps), creating an MLOps 
+framework tailored for efficient Earth Observation projects. GaiaFlow is built 
+to manage the entire pipeline of remote sensing applications, from data 
+ingestion to machine learning modeling to deploying them.
 
 It is a comprehensive template (_in-development_) for machine learning projects
-incorporating MLOps practices using `Airflow`, `MLFlow`, `JupyterLab` and `Minio`.
+providing a local MLOps framework with tools like `Airflow`, `MLFlow`, 
+`JupyterLab` and `Minio` to allow the user to create ML projects, experiments, 
+model deployments and more in an standardized way.
 
 
 The architecture below describes what we want to achieve as our MLOps framework.
@@ -22,7 +27,7 @@ Currently what we support is the within the box outlined as local MLOps.
 
 **Please note**: 
 This template has only been tested on Linux Ubuntu and it works as expected.
-As we have not tested it yet on Windows, we are not sure if it works in there.
+As we have not tested it yet on Windows or MacOS, we are not sure if it works in there.
 
 # Table of Contents
 - [Overview](#overview)
@@ -38,7 +43,7 @@ As we have not tested it yet on Windows, we are not sure if it works in there.
 - [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
     + [Docker and Docker compose plugin Installation](#docker-and-docker-compose-plugin-installation)
-- [Installation](#installation)
+  * [Installation](#installation)
 - [Troubleshooting](#troubleshooting)
 - [Acknowledgments](#acknowledgments)
 - [TODO](#todo)
@@ -86,7 +91,7 @@ or even worry about them. Just focus on the ones without the mark!
 ```
 
 
-## ML Pipeline Overview
+## MLOps Components
 
 Before you get started, let's explore the tools that we are using for this 
 standardized MLOps framework 
